@@ -1,5 +1,22 @@
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import App from "../App";
 export default function Login() {
-    var admin=false
+  async function loginUser(credentials) {
+    //axios.post('http://localhost:8000/login',JSON.stringify(credentials)) 
+    axios.get('http://localhost:8000/login',{mode:"cors"}).then((data)=> {
+    if (data.data!="authed") {
+      return false;
+    }
+    else {
+    localStorage.clear();
+    localStorage.setItem('user-token', data.data);
+    return true;
+    }
+    })
+  }
+  const navi=useNavigate();
+  var admin=false
     function portalswitch(e) {
       document.querySelector("#ab").style.backgroundColor="grey"
       document.querySelector("#sb").style.backgroundColor="grey"
@@ -14,7 +31,7 @@ export default function Login() {
       console.log(admin)
     }
     function login(e) {
-     
+      e.preventDefault();
       const ib=document.querySelector("#ID");
       const ub=document.querySelector("#NAME")
       const pb=document.querySelector("#PASSWORD")
@@ -38,6 +55,14 @@ export default function Login() {
         }
   
         console.log("login attempt: " +ib.value +","+ub.value+","+hash)
+        if (loginUser([ib.value,ub.value,hash,admin])) {
+          if (localStorage.getItem("user-token")!="authed") {
+            localStorage.setItem('user-token', "authed");
+            document.querySelector("#log").innerText="loading"
+          }
+        navi("/Home")
+      }
+
     }
     }
       return (
@@ -50,7 +75,7 @@ export default function Login() {
           <input id="NAME"></input>
           <p>Password</p>
           <input id="PASSWORD"></input>
-          <button onClick={login} href="/home">Login</button>
+          <button id="log" onClick={login}>Login</button>
         </div>
       );
 }

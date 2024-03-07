@@ -2,18 +2,27 @@
 import axios from "axios";
 import './App.css';
 import { Route, Routes } from "react-router-dom";
-import Navbar from "./js/Navbar";
+import ProtectedRoute from "./js/protectedroute";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 
+
 function App() {
+    /*axios.get('http://localhost:8000/loginc',{mode:"cors"}).then((data)=> {
+  
+      console.log(data);
+    })*/
   return (
     <>
-    <Navbar></Navbar>
     <Routes>
-      <Route path="/Home" element={<Home />}/>
-      <Route path="/" element={<Login />}/>
+      <Route path="/Home" element={ <ProtectedRoute>
+        <Home />
+        </ProtectedRoute>}
+        />
+      <Route path="/" element={<ProtectedRoute>
+        <Login />
+        </ProtectedRoute>}/>
     </Routes>
     </>
   )
@@ -23,8 +32,3 @@ function App() {
 
 export default App;
 
-/*const apiCall=() => {
-  axios.get('http://localhost:8000',{mode:"cors"}).then((data)=> {
-
-    console.log(data);
-  })*/
