@@ -3,7 +3,6 @@ import {Navigate, useLocation} from "react-router-dom"
 
 const ProtectedRoute = ({children}) => {
     let location = useLocation();
-    console.log(location.pathname);
     if (localStorage.getItem("user-token")!="authed" && location.pathname!="/") {
         return <Navigate to="/" state={{ from: location}} replace />
     }

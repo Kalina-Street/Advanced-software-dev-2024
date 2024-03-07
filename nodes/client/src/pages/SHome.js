@@ -1,6 +1,6 @@
 import Logout from "../js/Logout";
 
-export default function Home() {
+export default function SHome() {
     return (
         <>
     <p>Home page</p>

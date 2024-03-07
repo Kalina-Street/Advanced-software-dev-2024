@@ -4,7 +4,7 @@ import './App.css';
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./js/protectedroute";
 
-import Home from "./pages/Home";
+import SHome from "./pages/SHome";
 import Login from "./pages/Login";
 
 
@@ -16,8 +16,8 @@ function App() {
   return (
     <>
     <Routes>
-      <Route path="/Home" element={ <ProtectedRoute>
-        <Home />
+      <Route path="/Shome" element={ <ProtectedRoute>
+        <SHome />
         </ProtectedRoute>}
         />
       <Route path="/" element={<ProtectedRoute>

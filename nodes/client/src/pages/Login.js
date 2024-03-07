@@ -60,7 +60,7 @@ export default function Login() {
             localStorage.setItem('user-token', "authed");
             document.querySelector("#log").innerText="loading"
           }
-        navi("/Home")
+        navi("/Shome")
       }
 
     }
