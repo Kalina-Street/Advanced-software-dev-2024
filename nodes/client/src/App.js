@@ -16,7 +16,7 @@ function App() {
   return (
     <>
     <Routes>
-      <Route path="/Shome" element={ <ProtectedRoute>
+      <Route path="/SHome" element={ <ProtectedRoute>
         <SHome />
         </ProtectedRoute>}
         />

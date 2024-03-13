@@ -7,7 +7,7 @@ const ProtectedRoute = ({children}) => {
         return <Navigate to="/" state={{ from: location}} replace />
     }
     else if  (localStorage.getItem("user-token")=="authed" && location.pathname=="/") {
-        return <Navigate to="/Home" state={{ from: location}} replace />
+        return <Navigate to="/SHome" state={{ from: location}} replace />
     }
  return children
 
