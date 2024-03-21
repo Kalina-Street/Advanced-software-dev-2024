@@ -1,10 +1,14 @@
 import { useEffect } from "react";
 import Logout from "../js/Logout";
+import axios from "axios";
+
 const L=require("leaflet")
 //MAP CREDITS
 export default function Sprofile() {
-    let mapp=
+    let user=0
+    let mapp=null
     useEffect(()=> {
+
         try {
     var map = L.map('map').setView([51.505, -0.09], 13);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -13,7 +17,19 @@ export default function Sprofile() {
 }).addTo(map);
 if (mapp==undefined) {
     mapp=map
-}}
+}
+axios.get('http://localhost:8000/person',{mode:"cors"}).then((data)=> {
+    console.log(data.data)
+    user=data.data[0].id;
+    document.querySelector("#fullname").innerText=data.data[0].firstName + " " + data.data[0].lastName;
+    if (data.data[0].status===1) {
+        document.querySelector("#status").innerText="Active";
+    }
+    if (data.data[0].inoffice===1) {
+        document.querySelector("#office").innerText="Active";
+    }
+    mapp.setView([data.data[0].lat,data.data[0].long],15);
+})}
 catch (error) {
 
 }}
@@ -22,8 +38,8 @@ catch (error) {
         navigator.geolocation.getCurrentPosition(printo,maperror,{enableHighAccuracy:true});
     }
     function printo(position) {
-        console.log(mapp)
         mapp.setView([position.coords.latitude,position.coords.longitude],15);
+        axios.post('http://localhost:8000/updatecoord',{lat:position.coords.latitude,long:position.coords.longitude,id:user}) 
     }
     function maperror(error) {
             switch(error.code) {
@@ -45,16 +61,16 @@ catch (error) {
         <div style={{display:"block"}} id="profile">
             <div>
     <img src=""></img>
-    <p>Name</p>
+    <p id="fullname">Name</p>
     </div>
     <div>
         <p style={{display:"inline"}}>Status:</p>
-        <button style={{display:"inline"}}>Active</button>
+        <button id="status" style={{display:"inline"}}>Inactive</button>
     </div>
     
     <div>
         <p style={{display:"inline"}}>In office:</p>
-        <button style={{display:"inline"}}>Yes</button>
+        <button id="office" style={{display:"inline"}}>No</button>
     </div>
 
     <div>
