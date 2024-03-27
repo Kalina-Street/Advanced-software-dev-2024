@@ -6,6 +6,7 @@ export default function Logout () {
     function exi(e) {
         e.preventDefault();
         localStorage.setItem("user-token","")
+        localStorage.setItem("auth-token","")
         navi("/")
     }
     return(

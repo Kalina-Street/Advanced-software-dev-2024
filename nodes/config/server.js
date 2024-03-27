@@ -65,12 +65,14 @@ class Database {
         request.input("id",sql.Int,data.id);
         request.input('firstName',sql.NVarChar(255),data.firstName);
         request.input('lastName',sql.NVarChar(255),data.lastName);
+        request.input('password',sql.Int,data.password);
+        request.input('organisation',sql.Int,data.organisation);
         request.input('status',sql.TinyInt,data.status);
         request.input('inoffice',sql.TinyInt,data.inoffice);
         request.input('lat',sql.Float,data.lat);
         request.input('long',sql.Float,data.long);
 
-        const result= await request.query("INSERT INTO Person (id,firstname,lastname,status,inoffice,lat,long) VALUES (@id,@firstName,@lastName,@status,@inoffice,@lat,@long)");
+        const result= await request.query("INSERT INTO Person (id,firstname,lastname,password,organisation,status,inoffice,lat,long) VALUES (@id,@firstName,@lastName,@password,@organisation,@status,@inoffice,@lat,@long)");
         return result.rowsAffected[0];
     }
     async readAll() {
@@ -125,12 +127,25 @@ class Database {
       return result.rowsAffected[0];
     }
 
+    async verifylogin(firstName,lastName,password,organisation) {
+        await this.connect();
+
+        const request=this.poolconnection.request();
+        request.input("firstname",sql.VarChar(255),firstName);
+        request.input("lastname",sql.VarChar(255),lastName);
+        request.input("password",sql.Int,password);
+        request.input("organisation",sql.Int,organisation);
+
+        const result=await request.query("SELECT id FROM person WHERE firstname=@firstname AND lastname=@lastname AND password=@password AND organisation=@organisation");
+        return result.recordset[0];
+    }
+
 
     async createtable() {
       await this.connect()
 
       const request=this.poolconnection.request();
-      const result=await request.query("CREATE TABLE person (id int ,firstName VarChar(255), lastName varChar(255),status tinyint, inoffice tinyint,lat float, long float PRIMARY KEY (id))")
+      const result=await request.query("CREATE TABLE person (id int ,firstName VarChar(255), lastName varChar(255),password int,organisation int,status tinyint, inoffice tinyint,lat float, long float PRIMARY KEY (id))")
 
       return result.rowsAffected[0];
     }
@@ -144,8 +159,9 @@ class Database {
     }
 }
 connector=new Database();
-//connector.create({id:1,firstName:"Kalina",lastName:"Street",status:0,inoffice:0,lat:12.0,long:12.0});
+//connector.create({id:1,firstName:"Kalina",lastName:"Street",password:2645,organisation:1,status:0,inoffice:0,lat:12.0,long:12.0});
 // const app=require('../src/app');
+//connector.delete(1)
 
 const express = require('express');
 const { connect } = require('http2');
@@ -166,23 +182,31 @@ app.get('/person',async (req,res)=>{
     res.send(records);
 })
 app.post('/updatecoord',async (req,res)=>{
-  const chunks = [];
-  let data=""
-  req.on("data", (chunk) => {
-    chunks.push(chunk);
-  });
-  req.on("end", async () => {
-    data = Buffer.concat(chunks);
-    console.log(data);
-    const stringData = data.toString();
-    const parse=JSON.parse(stringData);
+    let chunks=[]
+    req.on("data",async (chunk) => {
+        chunks.push(chunk);
+      });
+    req.on("end",async ()=> {
+        parse=await datachunk(chunks)
     resul=await connector.pushcoord(parse.id,parse.lat,parse.long); 
     return resul;
+    })
   })
-})
 
-app.get('/login', (req,res)=>{
-  res.send("authed")
+app.post('/login', async (req,res)=>{
+   let chunks=[]
+    req.on("data",async (chunk) => {
+        chunks.push(chunk);
+      });
+    req.on("end",async ()=> {
+        
+        using=await datachunk(chunks)
+        
+         user=await connector.verifylogin(using.firstName,using.lastName,using.password,using.organisation);
+         console.log(user);
+            res.send(user);
+    })
+ 
 })
 
 app.listen(PORT,() => {
@@ -202,3 +226,13 @@ req.on("end", () => {
 app.post("/loginc",(req,res)=>{
     res.send(JSON.parse(stringData));
 });*/
+
+async function datachunk(chunks) {
+     
+      data =  Buffer.concat(chunks);
+      const stringData = data.toString();
+      const parse= JSON.parse(stringData);
+      data=parse;
+    return data;
+}
+  
