@@ -18,17 +18,18 @@ export default function Sprofile() {
 if (mapp==undefined) {
     mapp=map
 }
-axios.get('http://localhost:8000/person',{mode:"cors"}).then((data)=> {
+axios.post('http://localhost:8000/person',{id:localStorage.getItem("user-token")},{mode:"cors"}).then((data)=> {
     console.log(data.data)
-    user=data.data[0].id;
-    document.querySelector("#fullname").innerText=data.data[0].firstName + " " + data.data[0].lastName;
-    if (data.data[0].status===1) {
+    var info=data.data;
+    user=data.data.id;
+    document.querySelector("#fullname").innerText=info.firstName + " " + info.lastName;
+    if (info.status===1) {
         document.querySelector("#status").innerText="Active";
     }
-    if (data.data[0].inoffice===1) {
+    if (info.inoffice===1) {
         document.querySelector("#office").innerText="Active";
     }
-    mapp.setView([data.data[0].lat,data.data[0].long],15);
+    mapp.setView([info.lat,info.long],15);
 })}
 catch (error) {
 

@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import App from "../App";
 export default function Login() {
   async function loginUser(credentials) {
     await axios.post('http://localhost:8000/login',JSON.stringify(credentials),{mode:"cors"}).then((data)=> {
@@ -38,18 +37,18 @@ export default function Login() {
       const fb=document.querySelector("#FNAME")
       const lb=document.querySelector("#LNAME")
       const pb=document.querySelector("#PASSWORD")
-      if (ib.value=='') {
+      if (ib.value==='') {
         ib.style.borderColor="red";
       }
-      else if (fb.value=='') {
+      else if (fb.value==='') {
         ib.style.borderColor="black";
         fb.style.borderColor="red";
       }
-      else if (lb.value=='') {
+      else if (lb.value==='') {
         fb.style.borderColor="black";
         lb.style.borderColor="red";
       }
-      else if (pb.value=='') {
+      else if (pb.value==='') {
         lb.style.borderColor="black";
         pb.style.borderColor="red";
       }
@@ -60,10 +59,8 @@ export default function Login() {
           var atbl=pb.value.charCodeAt(i)
           hash +=atbl*(Math.floor(atbl/5)) *(i+1)
         }
-        let logvalue=await loginUser({firstName:fb.value,lastName:lb.value,password:hash,organisation:ib.value}).then(()=> {
-        });
+        await loginUser({firstName:fb.value,lastName:lb.value,password:hash,organisation:ib.value})
        
-
     }
     }
       return (

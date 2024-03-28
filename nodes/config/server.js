@@ -59,7 +59,7 @@ class Database {
         const result=await request.query(query);
         return result.rowsAffected[0];
     }
-    async create(data) {
+    async createuser(data) {
         await this.connect();
         const request=this.poolconnection.request();
         request.input("id",sql.Int,data.id);
@@ -75,23 +75,26 @@ class Database {
         const result= await request.query("INSERT INTO Person (id,firstname,lastname,password,organisation,status,inoffice,lat,long) VALUES (@id,@firstName,@lastName,@password,@organisation,@status,@inoffice,@lat,@long)");
         return result.rowsAffected[0];
     }
-    async readAll() {
+
+   
+    async personAll() {
         await this.connect();
         const request=this.poolconnection.request();
         const result=await request.query("SELECT * FROM person");
-        
+
         return result.recordset;
     }
-    async read(id) {
+    async readPerson(id) {
         await this.connect();
 
         const request=this.poolconnection.request();
         const result=await request.input("id",sql.Int,id).query("SELECT * FROM Person where id=@id");
+       
 
         return result.recordset[0];
 
     }
-    async update(id,data) {
+    async updatePerson(id,data) {
         await this.connect();
 
         const request=this.poolconnection.request();
@@ -105,7 +108,7 @@ class Database {
         return result.rowsAffected[0];
     }
 
-    async delete(id) {
+    async deletePerson(id) {
         await this.connect();
 
         const idAsNumber=Number(id);
@@ -140,12 +143,69 @@ class Database {
         return result.recordset[0];
     }
 
+    async createtask(data) {
+        await this.connect();
+        const request=this.poolconnection.request();
+        request.input("id",sql.Int,data.id);
+        request.input('title',sql.NVarChar(255),data.title);
+        request.input('description',sql.NVarChar(500),data.description);
+        request.input('category',sql.NVarChar(30),data.category);
+        request.input('startdate',sql.Date,data.date);
+        request.input('duration',sql.Int,data.duration);
+        request.input("organisation",sql.Int,data.organisation);
+        request.input('complete',sql.TinyInt,0);
+
+        const result= await request.query("INSERT INTO tasks (id,title,description,category,startdate,duration,organisation,complete) VALUES (@id,@title,@description,@category,@startdate,@duration,@organisation,@complete)");
+        return result.rowsAffected[0];
+    }
+
+    async taskAll() {
+        await this.connect();
+        const request=this.poolconnection.request();
+        const result=await request.query("SELECT * FROM tasks");
+        
+        return result.recordset;
+    }
+    async taskcat(category) {
+        await this.connect();
+        const request=this.poolconnection.request();
+        request.input("category",sql.NVarChar(30),category);
+        const result=await request.query("SELECT * FROM tasks WHERE category=@category");
+        
+        return result.recordset;
+    }
+
+    async newnote(note) {
+        await this.connect();
+
+        const request=this.poolconnection.request();
+
+        const maxid=await request.query("SELECT MAX(id) AS id FROM notes");
+        console.log(maxid.recordset);
+        if (maxid.recordset[0].id==null) {
+        }
+        request.input("description",sql.NVarChar(500),note.description);
+        request.input("task",sql.Int,note.task);
+        request.input("id",sql.Int,maxid.recordset[0].id+1);
+        const result=await request.query("Insert into notes (id,task,description) VALUES (@id,@task,@description)");
+        
+        return result.rowsAffected[0];
+    }
+    async notesAll(id) {
+        await this.connect();
+        const request=this.poolconnection.request();
+        request.input("task",sql.Int,id)
+        const result=await request.query("SELECT * FROM notes WHERE task=@task");
+        return result.recordset;
+    }
+
 
     async createtable() {
       await this.connect()
 
       const request=this.poolconnection.request();
-      const result=await request.query("CREATE TABLE person (id int ,firstName VarChar(255), lastName varChar(255),password int,organisation int,status tinyint, inoffice tinyint,lat float, long float PRIMARY KEY (id))")
+      //const result=await request.query("CREATE TABLE tasks (id int ,title VarChar(255), description varChar(500),category VarChar(30),startdate DATE,duration int,organisation int,complete tinyint, PRIMARY KEY (id))")
+    const result=await request.query("CREATE table notes (id int,task int, description VarChar(500), PRIMARY KEY (id)) ")
 
       return result.rowsAffected[0];
     }
@@ -157,11 +217,18 @@ class Database {
 
       return result.rowsAffected[0];
     }
+
 }
-connector=new Database();
-//connector.create({id:1,firstName:"Kalina",lastName:"Street",password:2645,organisation:1,status:0,inoffice:0,lat:12.0,long:12.0});
-// const app=require('../src/app');
-//connector.delete(1)
+let connector=new Database();
+
+//connector.createtable();
+
+//connector.createtask({id:1,title:"urgent1",description:"Sample urgent task",category:"Urgent",date:fulldate,duration:10000,organisation:1,complete:0});
+//connector.createtask({id:2,title:"routine1",description:"Sample routine task",category:"Routine",date:fulldate,duration:10000,organisation:1,complete:0});
+//connector.createtask({id:3,title:"other1",description:"Sample other task",category:"Other",date:fulldate,duration:10000,organisation:1,complete:0});
+
+//async function fet() { console.log(await connector.taskAll());}
+//fet();
 
 const express = require('express');
 const { connect } = require('http2');
@@ -177,9 +244,16 @@ app.get('/', (req,res)=>{
     res.send("hello from the server");
 })
 
-app.get('/person',async (req,res)=>{
-    records=await connector.readAll();
+app.post('/person',async (req,res)=>{
+    let chunks=[]
+    req.on("data",async (chunk) => {
+        chunks.push(chunk);
+      });
+    req.on("end",async ()=> {
+        var user=await datachunk(chunks)
+    records=await connector.readPerson(user.id);
     res.send(records);
+    })
 })
 app.post('/updatecoord',async (req,res)=>{
     let chunks=[]
@@ -203,11 +277,55 @@ app.post('/login', async (req,res)=>{
         using=await datachunk(chunks)
         
          user=await connector.verifylogin(using.firstName,using.lastName,using.password,using.organisation);
-         console.log(user);
             res.send(user);
     })
  
 })
+
+app.post('/tasks', async (req,res)=>{
+    let chunks=[]
+     req.on("data",async (chunk) => {
+         chunks.push(chunk);
+       });
+     req.on("end",async ()=> {
+         
+         let cat=await datachunk(chunks)
+         
+          let tasks=await connector.taskcat(cat);
+             res.send(tasks);
+     })
+  
+ })
+
+ app.post('/newnote', async (req,res)=>{
+    let chunks=[]
+     req.on("data",async (chunk) => {
+         chunks.push(chunk);
+       });
+     req.on("end",async ()=> {
+         
+         let note=await datachunk(chunks)
+         
+          let result=await connector.newnote(note);
+          res.send(200);
+     })
+    })
+
+     app.post('/notes', async (req,res)=>{
+        let chunks=[]
+         req.on("data",async (chunk) => {
+             chunks.push(chunk);
+           });
+         req.on("end",async ()=> {
+             
+             let id=await datachunk(chunks)
+             
+              let result=await connector.notesAll(id.id);
+              res.send(result);
+         })
+  
+ })
+
 
 app.listen(PORT,() => {
     console.log('server listening on ' +PORT);
