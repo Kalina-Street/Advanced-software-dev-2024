@@ -37,7 +37,7 @@ export default function Login() {
       const fb=document.querySelector("#FNAME")
       const lb=document.querySelector("#LNAME")
       const pb=document.querySelector("#PASSWORD")
-      if (ib.value==='') {
+      if (ib.value==='' && Number.isInteger(ib.value)) {
         ib.style.borderColor="red";
       }
       else if (fb.value==='') {
@@ -59,7 +59,7 @@ export default function Login() {
           var atbl=pb.value.charCodeAt(i)
           hash +=atbl*(Math.floor(atbl/5)) *(i+1)
         }
-        await loginUser({firstName:fb.value,lastName:lb.value,password:hash,organisation:ib.value})
+        await loginUser({firstName:fb.value.toString(),lastName:lb.value.toString(),password:hash,organisation:ib.value})
        
     }
     }

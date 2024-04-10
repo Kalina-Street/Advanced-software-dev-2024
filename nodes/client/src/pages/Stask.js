@@ -5,7 +5,7 @@ import axios from "axios";
 export default function Stask() {
     async function postnote(e) {
         e.preventDefault();
-        var id=document.querySelector("#notevalue").innerText;
+        var id=document.querySelector("#notetitle").title;
         var note=document.querySelector("#notevalue").value;
         e.target.innerText="pending..."
         await axios.post('http://localhost:8000/newnote',JSON.stringify({"task":id,"description":note}),{mode:"cors"}).then((data)=> {
@@ -33,8 +33,8 @@ export default function Stask() {
     </div>
     <div>
         <Filler id="Urgent" display="block"></Filler>
-        <Filler id="Routine" style={{display:"none"}}></Filler>
-        <Filler id="Other" style={{display:"none"}}></Filler>
+        <Filler id="Routine" display="none"></Filler>
+        <Filler id="Other" display="none"></Filler>
     </div>
     </div>
     <div style={{display:"none"}} id="notepopup">

@@ -10,7 +10,7 @@ export default function Sprofile() {
     useEffect(()=> {
 
         try {
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var map = L.map('map').setView([0, 0], 14);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -25,21 +25,67 @@ axios.post('http://localhost:8000/person',{id:localStorage.getItem("user-token")
     document.querySelector("#fullname").innerText=info.firstName + " " + info.lastName;
     if (info.status===1) {
         document.querySelector("#status").innerText="Active";
+        document.querySelector("#status").style.backgroundColor="green";
     }
     if (info.inoffice===1) {
-        document.querySelector("#office").innerText="Active";
+        document.querySelector("#office").innerText="Yes";
+        document.querySelector("#office").style.backgroundColor="green";
     }
-    mapp.setView([info.lat,info.long],15);
+    mapp.setView([info.lat,info.long],14);
 })}
 catch (error) {
 
 }}
 )
+    async function status(e) {
+        let cstat=0;
+        e.preventDefault();
+        
+        if (e.target.innerText==="Inactive") {
+            cstat=1;
+        };
+        console.log(cstat)
+        e.target.innerText="Updating..."
+        e.target.style.backgroundColor="grey";
+        
+        await axios.post('http://localhost:8000/statuschange',JSON.stringify({"id":localStorage.getItem("user-token"),"status":cstat}),{mode:"cors"}).then((data)=> {
+            if (cstat===0) {
+                e.target.innerText="Inactive";
+                e.target.style.backgroundColor="red";
+            }
+            else {
+                e.target.innerText="Active";
+                e.target.style.backgroundColor="green";
+            }
+                })
+            }
+
+    async function office(e) {
+        let cstat=0;
+        e.preventDefault();
+        if (e.target.innerText==="No") {
+            cstat=1;
+        };
+        e.target.innerText="Updating..."
+        e.target.style.backgroundColor="grey";
+        await axios.post('http://localhost:8000/officechange',JSON.stringify({"id":localStorage.getItem("user-token"),"inoffice":cstat}),{mode:"cors"}).then((data)=> {
+            if (cstat===1) {
+                e.target.innerText="Yes";
+                e.target.style.backgroundColor="green";
+                }
+                else {
+                e.target.innerText="No";
+                e.target.style.backgroundColor="red";
+                }
+        })
+    }
+
     function geo () {
         navigator.geolocation.getCurrentPosition(printo,maperror,{enableHighAccuracy:true});
     }
     function printo(position) {
-        mapp.setView([position.coords.latitude,position.coords.longitude],15);
+        mapp.setView([position.coords.latitude,position.coords.longitude],14);
+        console.log([position.coords.latitude,position.coords.longitude])
         axios.post('http://localhost:8000/updatecoord',{lat:position.coords.latitude,long:position.coords.longitude,id:user}) 
     }
     function maperror(error) {
@@ -66,12 +112,12 @@ catch (error) {
     </div>
     <div>
         <p style={{display:"inline"}}>Status:</p>
-        <button id="status" style={{display:"inline"}}>Inactive</button>
+        <button id="status" onClick={status} style={{display:"inline",backgroundColor:"red"}}>Inactive</button>
     </div>
     
     <div>
         <p style={{display:"inline"}}>In office:</p>
-        <button id="office" style={{display:"inline"}}>No</button>
+        <button id="office" onClick={office} style={{display:"inline",backgroundColor:"red"}}>No</button>
     </div>
 
     <div>

@@ -130,6 +130,28 @@ class Database {
       return result.rowsAffected[0];
     }
 
+    async officechange(id,inoffice) {
+        await this.connect();
+  
+        const request=this.poolconnection.request();
+        request.input("id",sql.Int,id);
+        request.input("inoffice",sql.TinyInt,inoffice);
+        const result=await request.query("UPDATE person SET inoffice=@inoffice WHERE id=@id")
+  
+        return result.rowsAffected[0];
+      }
+
+    async statuschange(id,status) {
+    await this.connect();
+
+    const request=this.poolconnection.request();
+    request.input("id",sql.Int,id);
+    request.input("status",sql.TinyInt,status);
+    const result=await request.query("UPDATE person SET status=@status WHERE id=@id")
+
+    return result.rowsAffected[0];
+    }
+
     async verifylogin(firstName,lastName,password,organisation) {
         await this.connect();
 
@@ -170,9 +192,28 @@ class Database {
         await this.connect();
         const request=this.poolconnection.request();
         request.input("category",sql.NVarChar(30),category);
-        const result=await request.query("SELECT * FROM tasks WHERE category=@category");
+        const result=await request.query("SELECT * FROM tasks WHERE category=@category AND complete=0");
         
         return result.recordset;
+    }
+
+    async taskcomplete(id) {
+        await this.connect();
+        const request=this.poolconnection.request();
+        request.input("id",sql.Int,id);
+        const result=await request.query("UPDATE tasks SET complete=1 WHERE id=@id");
+        
+        return result.rowsAffected[0];
+    }
+
+    async timereset(id,date) {
+        await this.connect();
+        const request=this.poolconnection.request();
+        request.input('id',sql.Int,id);
+        request.input('startdate',sql.Date,date);
+        const result=await request.query("UPDATE tasks SET startdate=@startdate WHERE id=@id");
+        
+        return result.rowsAffected[0];
     }
 
     async newnote(note) {
@@ -325,6 +366,68 @@ app.post('/tasks', async (req,res)=>{
          })
   
  })
+
+ app.post('/completetask', async (req,res)=>{
+    let chunks=[]
+     req.on("data",async (chunk) => {
+         chunks.push(chunk);
+       });
+     req.on("end",async ()=> {
+         
+         let id=await datachunk(chunks)
+         
+          let result=await connector.taskcomplete(id.id);
+          res.send({"result":result});
+     })
+
+})
+
+
+app.post('/officechange', async (req,res)=>{
+    let chunks=[]
+     req.on("data",async (chunk) => {
+         chunks.push(chunk);
+       });
+     req.on("end",async ()=> {
+         
+         let id=await datachunk(chunks)
+         
+          let result=await connector.officechange(id.id,id.inoffice);
+          res.send({"result":result});
+     })
+
+})
+
+
+app.post('/statuschange', async (req,res)=>{
+    let chunks=[]
+     req.on("data",async (chunk) => {
+         chunks.push(chunk);
+       });
+     req.on("end",async ()=> {
+         
+         let id=await datachunk(chunks)
+        
+         let result=await connector.statuschange(id.id,id.status);
+         res.send({"result":result});
+     })
+
+})
+
+
+app.post('/timereset', async (req,res)=>{
+    let chunks=[]
+     req.on("data",async (chunk) => {
+         chunks.push(chunk);
+       });
+     req.on("end",async ()=> {
+         let id=await datachunk(chunks)
+        
+         let result=await connector.timereset(chunks.id,chunks.date);
+         res.send({"result":result});
+     })
+
+})
 
 
 app.listen(PORT,() => {
