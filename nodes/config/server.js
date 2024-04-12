@@ -71,8 +71,9 @@ class Database {
         request.input('inoffice',sql.TinyInt,data.inoffice);
         request.input('lat',sql.Float,data.lat);
         request.input('long',sql.Float,data.long);
+        request.input('admin',sql.TinyInt,data.admin);
 
-        const result= await request.query("INSERT INTO Person (id,firstname,lastname,password,organisation,status,inoffice,lat,long) VALUES (@id,@firstName,@lastName,@password,@organisation,@status,@inoffice,@lat,@long)");
+        const result= await request.query("INSERT INTO Person (id,firstname,lastname,password,organisation,status,inoffice,lat,long,admin) VALUES (@id,@firstName,@lastName,@password,@organisation,@status,@inoffice,@lat,@long,@admin)");
         return result.rowsAffected[0];
     }
 
@@ -161,7 +162,7 @@ class Database {
         request.input("password",sql.Int,password);
         request.input("organisation",sql.Int,organisation);
 
-        const result=await request.query("SELECT id FROM person WHERE firstname=@firstname AND lastname=@lastname AND password=@password AND organisation=@organisation");
+        const result=await request.query("SELECT id,admin FROM person WHERE firstname=@firstname AND lastname=@lastname AND password=@password AND organisation=@organisation");
         return result.recordset[0];
     }
 
@@ -246,8 +247,7 @@ class Database {
 
       const request=this.poolconnection.request();
       //const result=await request.query("CREATE TABLE tasks (id int ,title VarChar(255), description varChar(500),category VarChar(30),startdate DATE,duration int,organisation int,complete tinyint, PRIMARY KEY (id))")
-    const result=await request.query("CREATE table notes (id int,task int, description VarChar(500), PRIMARY KEY (id)) ")
-
+    const result=await request.query("CREATE table person (id int,firstname VARCHAR(255), lastname VARCHAR(255),password int, organisation int,status TINYINT, inoffice TINYINT,lat float, long float, admin TINYINT  PRIMARY KEY (id)) ")
       return result.rowsAffected[0];
     }
     async droptable() {
@@ -261,7 +261,8 @@ class Database {
 
 }
 let connector=new Database();
-
+//connector.createuser({id:2,firstName:"Kamil",lastName:"Kozibura",password:2645,organisation:1,status:0,inoffice:0,lat:12.0,long:12.0,admin:1});
+//connector.createuser({id:1,firstName:"Kalina",lastName:"Street",password:2645,organisation:1,status:0,inoffice:0,lat:12.0,long:12.0,admin:0});
 //connector.createtable();
 
 //connector.createtask({id:1,title:"urgent1",description:"Sample urgent task",category:"Urgent",date:fulldate,duration:10000,organisation:1,complete:0});

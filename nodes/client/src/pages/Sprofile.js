@@ -22,7 +22,7 @@ axios.post('http://localhost:8000/person',{id:localStorage.getItem("user-token")
     console.log(data.data)
     var info=data.data;
     user=data.data.id;
-    document.querySelector("#fullname").innerText=info.firstName + " " + info.lastName;
+    document.querySelector("#fullname").innerText=info.firstname + " " + info.lastname;
     if (info.status===1) {
         document.querySelector("#status").innerText="Active";
         document.querySelector("#status").style.backgroundColor="green";

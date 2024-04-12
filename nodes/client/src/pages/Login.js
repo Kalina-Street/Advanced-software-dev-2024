@@ -11,14 +11,23 @@ export default function Login() {
     else {
     localStorage.setItem('user-token', data.data.id);
     localStorage.setItem('auth-token', "authed");
+    localStorage.setItem('admin-token', data.data.admin);
+    if (data.data.admin===0) { 
     navi("/SHome")
+    }
+    else if (data.data.admin===1) {
+      navi("/AHome")
+    }
+    else {
+      console.log("invalid admin")
+    }
     return true;
     }
     })
   }
   const navi=useNavigate();
   var admin=false
-    function portalswitch(e) {
+    /*function portalswitch(e) {
       document.querySelector("#ab").style.backgroundColor="grey"
       document.querySelector("#sb").style.backgroundColor="grey"
       e.preventDefault();
@@ -30,7 +39,7 @@ export default function Login() {
         admin=false;
       }
       console.log(admin)
-    }
+    }*/
     async function login(e) {
       e.preventDefault();
       const ib=document.querySelector("#ID");
@@ -65,8 +74,8 @@ export default function Login() {
     }
       return (
         <div>
-          <button id="ab" onClick={portalswitch}>Administrator</button>
-          <button id="sb" onClick={portalswitch}>Staff</button>
+          {/*<button id="ab" onClick={portalswitch}>Administrator</button>*/}
+          {/*<button id="sb" onClick={portalswitch}>Staff</button>*/}
           <p>Organisation ID</p>
           <input id="ID"></input>
           <p>First name</p>

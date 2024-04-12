@@ -6,6 +6,7 @@ import ProtectedRoute from "./js/protectedroute";
 
 import SHome from "./pages/SHome";
 import Login from "./pages/Login";
+import Ahome from "./pages/Ahome";
 
 
 function App() {
@@ -23,7 +24,13 @@ function App() {
       <Route path="/" element={<ProtectedRoute>
         <Login />
         </ProtectedRoute>}/>
+
+        <Route path="/Ahome" element={<ProtectedRoute>
+        <Ahome />
+        </ProtectedRoute>}/>
     </Routes>
+
+    
     </>
   )
   }
