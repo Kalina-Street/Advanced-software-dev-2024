@@ -8,18 +8,10 @@ export default function Sprofile() {
     let user=0
     let mapp=null
     useEffect(()=> {
-
-        try {
-    var map = L.map('map').setView([0, 0], 14);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-if (mapp==undefined) {
-    mapp=map
-}
-axios.post('http://localhost:8000/person',{id:localStorage.getItem("user-token")},{mode:"cors"}).then((data)=> {
-    console.log(data.data)
+    
+if (window.navigator.onLine===true) {
+    document.querySelector("#connectionnotif").style.display="none";
+    axios.post('http://localhost:8000/person',{id:localStorage.getItem("user-token")},{mode:"cors"}).then((data)=> {
     var info=data.data;
     user=data.data.id;
     document.querySelector("#fullname").innerText=info.firstname + " " + info.lastname;
@@ -31,13 +23,33 @@ axios.post('http://localhost:8000/person',{id:localStorage.getItem("user-token")
         document.querySelector("#office").innerText="Yes";
         document.querySelector("#office").style.backgroundColor="green";
     }
-    mapp.setView([info.lat,info.long],14);
-})}
-catch (error) {
+    document.querySelector("#profileloader").style.display="none";
+    document.querySelector("#profilecontent").style.display="block";
 
-}}
+    try {
+        var map = L.map('map').setView([0, 0], 14);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    if (mapp==undefined) {
+        mapp=map
+    } }
+    catch (error) {
+    
+    }
+    mapp.setView([info.lat,info.long],14);
+  
+})
+}
+else {
+    document.querySelector("#connectionnotif").style.display="block";
+}
+        }
 )
     async function status(e) {
+        if (window.navigator.onLine===true) {
+            document.querySelector("#connectionnotif").style.display="block";
         let cstat=0;
         e.preventDefault();
         
@@ -59,8 +71,14 @@ catch (error) {
             }
                 })
             }
+            else {
+                document.querySelector("#connectionnotif").style.display="block";
+            }
+            }
 
     async function office(e) {
+        if (window.navigator.onLine===true) {
+            document.querySelector("#connectionnotif").style.display="none";
         let cstat=0;
         e.preventDefault();
         if (e.target.innerText==="No") {
@@ -78,15 +96,26 @@ catch (error) {
                 e.target.style.backgroundColor="red";
                 }
         })
+    } else {
+        document.querySelector("#connectionnotif").style.display="block";
+    }
     }
 
     function geo () {
+       if (window.navigator.onLine===true) {
+            document.querySelector("#geob").innerText="Updating...."
+            document.querySelector("#connectionnotif").style.display="none";
         navigator.geolocation.getCurrentPosition(printo,maperror,{enableHighAccuracy:true});
     }
-    function printo(position) {
-        mapp.setView([position.coords.latitude,position.coords.longitude],14);
-        console.log([position.coords.latitude,position.coords.longitude])
-        axios.post('http://localhost:8000/updatecoord',{lat:position.coords.latitude,long:position.coords.longitude,id:user}) 
+    else {
+        document.querySelector("#connectionnotif").style.display="block";
+    }
+    }
+    async function printo(position) {
+        await axios.post('http://localhost:8000/updatecoord',{lat:position.coords.latitude,long:position.coords.longitude,id:user}).then((data)=> {
+            document.querySelector("#geob").innerText="Update"
+            mapp.setView([position.coords.latitude,position.coords.longitude],14);
+        }) 
     }
     function maperror(error) {
             switch(error.code) {
@@ -106,8 +135,10 @@ catch (error) {
     }
     return (
         <div style={{display:"block"}} id="profile">
-            <div>
-    <img src=""></img>
+            <p id="profileloader">Loading...</p>
+            <div id="profilecontent" style={{display:"none"}}>
+
+            <div >
     <p id="fullname">Name</p>
     </div>
     <div>
@@ -122,8 +153,9 @@ catch (error) {
 
     <div>
         <p style={{display:"inline"}}>Location:</p>
-        <button onClick={geo} style={{display:"inline"}}>Update</button>
+        <button onClick={geo} style={{display:"inline"}} id="geob">Update</button>
         <div style={{height:200 + "px",width:800 +"px"}}id="map"></div>
+    </div>
     </div>
     </div>
     )

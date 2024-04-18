@@ -4,13 +4,19 @@ import axios from "axios";
 
 export default function Stask() {
     async function postnote(e) {
+        if (window.navigator.onLine===true) {
+            document.querySelector("#connectionnotif").style.display="none";
         e.preventDefault();
         var id=document.querySelector("#notetitle").title;
         var note=document.querySelector("#notevalue").value;
-        e.target.innerText="pending..."
+        e.target.innerText="sending..."
         await axios.post('http://localhost:8000/newnote',JSON.stringify({"task":id,"description":note}),{mode:"cors"}).then((data)=> {
             closer();
         })
+    }
+    else {
+        document.querySelector("#connectionnotif").style.display="block";
+    }
     }
     function closer() {
         document.querySelector("#notepopup").style.display="none";

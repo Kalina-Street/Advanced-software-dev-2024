@@ -2,11 +2,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 export default function Login() {
   async function loginUser(credentials) {
+    document.querySelector("#log").innerText="processing..."
+    if (window.navigator.onLine===true) {
+      document.querySelector("#connectionnotif").style.display="none";
     await axios.post('http://localhost:8000/login',JSON.stringify(credentials),{mode:"cors"}).then((data)=> {
-      console.log(data)
+      document.querySelector("#log").innerText="Submit"
     //await axios.get('http://localhost:8000/login',{mode:"cors"}).then((data)=> {
     if (data.data.id==="") {
-      return false;
+      console.log("user not found")
     }
     else {
     localStorage.setItem('user-token', data.data.id);
@@ -24,6 +27,10 @@ export default function Login() {
     return true;
     }
     })
+  }
+  else {
+    document.querySelector("#connectionnotif").style.display="block";
+  }
   }
   const navi=useNavigate();
   var admin=false

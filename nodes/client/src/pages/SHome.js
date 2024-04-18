@@ -8,6 +8,7 @@ import axios from "axios";
 export default function SHome() {
   
     return (
+        
         <div id="outer">
             <Tabs></Tabs>
         <div id="rootx">

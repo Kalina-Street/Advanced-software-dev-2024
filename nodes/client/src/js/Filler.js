@@ -11,12 +11,14 @@ export default function Filler(props) {
         document.querySelector("#nonpopup").style.display="none";
     }
     async function openertwo() {
-        var id=this.parentElement.parentElement.id;
+        if (window.navigator.onLine===true) {
+            document.querySelector("#connectionnotif").style.display="none";
+            this.innerText="Loading";
+            var id=this.parentElement.parentElement.id;
         document.querySelector("#notetitletwo").title=id;
         document.querySelector("#notetitletwo").innerText=this.parentElement.parentElement.querySelector(".titleid").innerText;
         await axios.post('http://localhost:8000/notes',JSON.stringify({"id":id}),{mode:"cors"}).then((data)=> {
             var noteslist=data.data;
-            console.log(noteslist);
             for (var w=0;w<noteslist.length;w++) {
                 var tempnote=document.createElement("p");
                 tempnote.classList.add("tempnote")
@@ -27,20 +29,33 @@ export default function Filler(props) {
         })
         document.querySelector("#notegallery").style.display="block";
         document.querySelector("#nonpopup").style.display="none";
+        this.innerText="View notes"
+    }
+    else {
+        document.querySelector("#connectionnotif").style.display="block";
+    }
     }
 
     async function completer() {
         var id=this.parentElement.parentElement.id;
+        this.innerText="sending..."
+        if (window.navigator.onLine===true) {
+            document.querySelector("#connectionnotif").style.display="none";
         await axios.post('http://localhost:8000/completetask',JSON.stringify({"id":id}),{mode:"cors"}).then((data)=> {
                 this.parentElement.parentElement.remove();
         })
     }
+    else {
+        document.querySelector("#connectionnotif").style.display="block";
+    }
+    }
 
     useEffect( ()=> {
         async function tasker() {
+            if (window.navigator.onLine===true) {
+                document.querySelector("#connectionnotif").style.display="none";
             hasfetched=true;
         await axios.post('http://localhost:8000/tasks',JSON.stringify(props.id),{mode:"cors"}).then(async (data)=> {
-            console.log(data)
       let tasklist=data.data;
       let dateob=new Date();
       for (var i=0;i<tasklist.length;i++) {
@@ -59,12 +74,11 @@ export default function Filler(props) {
         tasklist[i].startdate=tasklist[i].startdate.replace("T00:00:00.000Z","")
         var begindate=new Date(tasklist[i].startdate).getTime();
         var targetdate=dateob.getTime();
-        var datestring=(dateob.getFullYear()).toString() +"-"+ (dateob.getMonth()+1).toString() +"-"+ (dateob.getDate()).toString()
-        console.log(datestring)
+        var datestring=(dateob.getFullYear()).toString() +"-"+ (dateob.getMonth()+1).toString() +"-"+ (dateob.getDate()+1).toString()
         if (props.id=="Routine") {
             if (begindate+tasklist[i].duration-targetdate.toFixed(2)<=0) {
                 begindate=targetdate;
-                await axios.post('http://localhost:8000/timereset',JSON.stringify({"date":begindate,"id":tasklist[i].id}),{mode:"cors"}).then((data)=> {
+                await axios.post('http://localhost:8000/timereset',JSON.stringify({"date":datestring,"id":tasklist[i].id}),{mode:"cors"}).then((data)=> {
             })
             }
         }
@@ -93,15 +107,35 @@ export default function Filler(props) {
         tempdiv.appendChild(tempprogress);
         tempdiv.appendChild(indiv);
 
-        document.querySelector("#" + props.id).appendChild(tempdiv);
+        //document.querySelector("#" + props.id).appendChild(tempdiv);
+        let entries=document.querySelector("#" + props.id).children;
+        let inserted=false;
+        for (let w=0;w<entries.length;w++) {
+            if (parseInt(tempprogress.innerText.replace("hours remaining",""))<parseInt(entries[w].children[2].innerText.replace("hours remaining",""))&&inserted===false) {
+                document.querySelector("#" + props.id).insertBefore(tempdiv,entries[w]);
+                inserted=true;
+            }
+        }
+        if (inserted===false) {
+            document.querySelector("#" + props.id).appendChild(tempdiv);
+        }
+        
       }
+      document.querySelector("#"+props.id).style.display="block"
+      document.querySelector("#"+props.id+"loader").style.display="none"
     })
+} else {
+    document.querySelector("#connectionnotif").style.display="block";
+}
 }   
 if (hasfetched===false) {
     tasker();
 }
     })
     return (
-        <div id={props.id} style={{display:props.display,overflowY:"scroll",height:80 + "vh"}}className="filler"></div>
+        <div id={props.id+"wrapper"} style={{display:props.display}} className="filler">
+            <p id={props.id+"loader"}>Loading....</p>
+        <div id={props.id} style={{display:"none",overflowY:"scroll",height:80 + "vh"}}></div>
+        </div>
     )
 }

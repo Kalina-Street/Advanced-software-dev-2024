@@ -217,15 +217,32 @@ class Database {
         return result.rowsAffected[0];
     }
 
+    async durationreset(id,duration) {
+        await this.connect();
+        const request=this.poolconnection.request();
+        request.input('id',sql.Int,id);
+        request.input('duration',sql.Int,duration);
+        const result=await request.query("UPDATE tasks SET duration=@duration WHERE id=@id");
+        
+        return result.rowsAffected[0];
+    }
+
+
+    async notesclear(id) {
+        await this.connect();
+        const request=this.poolconnection.request();
+        request.input('id',sql.Int,id);
+        const result=await request.query("DELETE FROM notes WHERE task=@id");
+        
+        return result.rowsAffected[0];
+    }
+
     async newnote(note) {
         await this.connect();
 
         const request=this.poolconnection.request();
 
         const maxid=await request.query("SELECT MAX(id) AS id FROM notes");
-        console.log(maxid.recordset);
-        if (maxid.recordset[0].id==null) {
-        }
         request.input("description",sql.NVarChar(500),note.description);
         request.input("task",sql.Int,note.task);
         request.input("id",sql.Int,maxid.recordset[0].id+1);
@@ -265,7 +282,7 @@ let connector=new Database();
 //connector.createuser({id:1,firstName:"Kalina",lastName:"Street",password:2645,organisation:1,status:0,inoffice:0,lat:12.0,long:12.0,admin:0});
 //connector.createtable();
 
-//connector.createtask({id:1,title:"urgent1",description:"Sample urgent task",category:"Urgent",date:fulldate,duration:10000,organisation:1,complete:0});
+//connector.createtask({id:4,title:"urgent2",description:"Sample urgent task",category:"Urgent",date:datestring,duration:10000,organisation:1,complete:0});
 //connector.createtask({id:2,title:"routine1",description:"Sample routine task",category:"Routine",date:fulldate,duration:10000,organisation:1,complete:0});
 //connector.createtask({id:3,title:"other1",description:"Sample other task",category:"Other",date:fulldate,duration:10000,organisation:1,complete:0});
 
@@ -305,7 +322,7 @@ app.post('/updatecoord',async (req,res)=>{
     req.on("end",async ()=> {
         parse=await datachunk(chunks)
     resul=await connector.pushcoord(parse.id,parse.lat,parse.long); 
-    return resul;
+    res.send(200);
     })
   })
 
@@ -423,8 +440,8 @@ app.post('/timereset', async (req,res)=>{
        });
      req.on("end",async ()=> {
          let id=await datachunk(chunks)
-        
-         let result=await connector.timereset(chunks.id,chunks.date);
+         let result=await connector.timereset(id.id,new Date(id.date));
+         let result2=await connector.notesclear(id.id);
          res.send({"result":result});
      })
 
