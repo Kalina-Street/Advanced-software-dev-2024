@@ -17,6 +17,7 @@ function App() {
   return (
     <>
     <p style={{display:"none"}} id="connectionnotif">No internet connection</p>
+    <p style={{display:"none"}} id="axiosnotif">Server connection error</p>
     <Routes>
       <Route path="/SHome" element={ <ProtectedRoute>
         <SHome />

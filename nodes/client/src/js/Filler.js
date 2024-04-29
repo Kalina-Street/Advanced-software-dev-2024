@@ -11,6 +11,7 @@ export default function Filler(props) {
         document.querySelector("#nonpopup").style.display="none";
     }
     async function openertwo() {
+        document.querySelector("#axiosnotif").style.display="none";
         if (window.navigator.onLine===true) {
             document.querySelector("#connectionnotif").style.display="none";
             this.innerText="Loading";
@@ -39,10 +40,13 @@ export default function Filler(props) {
     async function completer() {
         var id=this.parentElement.parentElement.id;
         this.innerText="sending..."
+        document.querySelector("#axiosnotif").style.display="none";
         if (window.navigator.onLine===true) {
             document.querySelector("#connectionnotif").style.display="none";
         await axios.post('http://localhost:8000/completetask',JSON.stringify({"id":id}),{mode:"cors"}).then((data)=> {
                 this.parentElement.parentElement.remove();
+        }).catch(error => {
+            document.querySelector("#axiosnotif").style.display="block";
         })
     }
     else {
@@ -52,6 +56,7 @@ export default function Filler(props) {
 
     useEffect( ()=> {
         async function tasker() {
+            document.querySelector("#axiosnotif").style.display="none";
             if (window.navigator.onLine===true) {
                 document.querySelector("#connectionnotif").style.display="none";
             hasfetched=true;
@@ -77,12 +82,12 @@ export default function Filler(props) {
         var datestring=(dateob.getFullYear()).toString() +"-"+ (dateob.getMonth()+1).toString() +"-"+ (dateob.getDate()+1).toString()
         if (props.id=="Routine") {
             if (begindate+tasklist[i].duration-targetdate.toFixed(2)<=0) {
-                begindate=targetdate;
+                begindate=new Date(new Date().setHours(0, 0, 0, 0)).getTime()-(new Date().getTimezoneOffset()*60*1000);
                 await axios.post('http://localhost:8000/timereset',JSON.stringify({"date":datestring,"id":tasklist[i].id}),{mode:"cors"}).then((data)=> {
             })
             }
         }
-        tempprogress.innerText=(((begindate+tasklist[i].duration)-targetdate)/1000/60/60).toFixed(2)+" hours remaining";
+        tempprogress.innerText=((((begindate+tasklist[i].duration)-targetdate)/1000/60/60)+(new Date().getTimezoneOffset())/60).toFixed(2)+" hours remaining";
 
         var indiv=document.createElement("div");
         var viewnote=document.createElement("button");
@@ -123,7 +128,10 @@ export default function Filler(props) {
       }
       document.querySelector("#"+props.id).style.display="block"
       document.querySelector("#"+props.id+"loader").style.display="none"
+    }).catch(error => {
+       document.querySelector("#axiosnotif").style.display="block";
     })
+
 } else {
     document.querySelector("#connectionnotif").style.display="block";
 }

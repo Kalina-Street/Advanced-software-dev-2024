@@ -28,7 +28,6 @@ class Database {
     }
     async connect () {
         try {
-            console.log("Database connecting... ${this.connected}")
             if (this.connected===false) {
                 this.poolconnection=await sql.connect(this.config);
                 this.connected=true;
@@ -36,9 +35,10 @@ class Database {
             else {
                 console.log("already connected")
             }
+            return "success";
         }
             catch (error) {
-                console.error(JSON.stringify(error))
+                return error;
             }
 
     }
@@ -54,13 +54,15 @@ class Database {
     }
 
     async executeQuery(query) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
         const request=this.poolconnection.request();
         const result=await request.query(query);
         return result.rowsAffected[0];
     }
     async createuser(data) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
         const request=this.poolconnection.request();
         request.input("id",sql.Int,data.id);
         request.input('firstName',sql.NVarChar(255),data.firstName);
@@ -79,14 +81,16 @@ class Database {
 
    
     async personAll() {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
         const request=this.poolconnection.request();
         const result=await request.query("SELECT * FROM person");
 
         return result.recordset;
     }
     async readPerson(id) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
 
         const request=this.poolconnection.request();
         const result=await request.input("id",sql.Int,id).query("SELECT * FROM Person where id=@id");
@@ -96,7 +100,8 @@ class Database {
 
     }
     async updatePerson(id,data) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
 
         const request=this.poolconnection.request();
 
@@ -110,7 +115,8 @@ class Database {
     }
 
     async deletePerson(id) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
 
         const idAsNumber=Number(id);
         const request=this.poolconnection.request();
@@ -120,7 +126,8 @@ class Database {
     }
 
     async pushcoord(id,lat,long) {
-      await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
 
       const request=this.poolconnection.request();
       request.input("id",sql.Int,id);
@@ -132,7 +139,8 @@ class Database {
     }
 
     async officechange(id,inoffice) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
   
         const request=this.poolconnection.request();
         request.input("id",sql.Int,id);
@@ -143,7 +151,8 @@ class Database {
       }
 
     async statuschange(id,status) {
-    await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
 
     const request=this.poolconnection.request();
     request.input("id",sql.Int,id);
@@ -154,7 +163,8 @@ class Database {
     }
 
     async verifylogin(firstName,lastName,password,organisation) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
 
         const request=this.poolconnection.request();
         request.input("firstname",sql.VarChar(255),firstName);
@@ -167,7 +177,8 @@ class Database {
     }
 
     async createtask(data) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
         const request=this.poolconnection.request();
         request.input("id",sql.Int,data.id);
         request.input('title',sql.NVarChar(255),data.title);
@@ -183,14 +194,18 @@ class Database {
     }
 
     async taskAll() {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
+
         const request=this.poolconnection.request();
         const result=await request.query("SELECT * FROM tasks");
         
         return result.recordset;
     }
     async taskcat(category) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
+
         const request=this.poolconnection.request();
         request.input("category",sql.NVarChar(30),category);
         const result=await request.query("SELECT * FROM tasks WHERE category=@category AND complete=0");
@@ -199,7 +214,9 @@ class Database {
     }
 
     async taskcomplete(id) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
+
         const request=this.poolconnection.request();
         request.input("id",sql.Int,id);
         const result=await request.query("UPDATE tasks SET complete=1 WHERE id=@id");
@@ -208,7 +225,8 @@ class Database {
     }
 
     async timereset(id,date) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
         const request=this.poolconnection.request();
         request.input('id',sql.Int,id);
         request.input('startdate',sql.Date,date);
@@ -218,7 +236,9 @@ class Database {
     }
 
     async durationreset(id,duration) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
+
         const request=this.poolconnection.request();
         request.input('id',sql.Int,id);
         request.input('duration',sql.Int,duration);
@@ -229,7 +249,9 @@ class Database {
 
 
     async notesclear(id) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
+
         const request=this.poolconnection.request();
         request.input('id',sql.Int,id);
         const result=await request.query("DELETE FROM notes WHERE task=@id");
@@ -238,7 +260,8 @@ class Database {
     }
 
     async newnote(note) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
 
         const request=this.poolconnection.request();
 
@@ -251,7 +274,9 @@ class Database {
         return result.rowsAffected[0];
     }
     async notesAll(id) {
-        await this.connect();
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
+
         const request=this.poolconnection.request();
         request.input("task",sql.Int,id)
         const result=await request.query("SELECT * FROM notes WHERE task=@task");
@@ -260,7 +285,8 @@ class Database {
 
 
     async createtable() {
-      await this.connect()
+      var connectionstat= await this.connect();
+        console.log(connectionstat);
 
       const request=this.poolconnection.request();
       //const result=await request.query("CREATE TABLE tasks (id int ,title VarChar(255), description varChar(500),category VarChar(30),startdate DATE,duration int,organisation int,complete tinyint, PRIMARY KEY (id))")
@@ -268,7 +294,8 @@ class Database {
       return result.rowsAffected[0];
     }
     async droptable() {
-      await this.connect()
+        var connectionstat= await this.connect();
+        console.log(connectionstat);
 
       const request=this.poolconnection.request();
       const result=await request.query("DROP TABLE person")

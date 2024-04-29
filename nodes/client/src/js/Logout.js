@@ -8,6 +8,9 @@ export default function Logout () {
         localStorage.setItem("user-token","")
         localStorage.setItem("auth-token","")
         localStorage.setItem("admin-token","")
+        document.querySelector("#axiosnotif").style.display="none";
+        document.querySelector("#connectionnotif").style.display="none";
+        
         navi("/")
     }
     return(

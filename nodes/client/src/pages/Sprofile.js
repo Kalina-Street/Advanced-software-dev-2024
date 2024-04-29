@@ -8,7 +8,7 @@ export default function Sprofile() {
     let user=0
     let mapp=null
     useEffect(()=> {
-    
+        document.querySelector("#axiosnotif").style.display="none";
 if (window.navigator.onLine===true) {
     document.querySelector("#connectionnotif").style.display="none";
     axios.post('http://localhost:8000/person',{id:localStorage.getItem("user-token")},{mode:"cors"}).then((data)=> {
@@ -40,6 +40,8 @@ if (window.navigator.onLine===true) {
     }
     mapp.setView([info.lat,info.long],14);
   
+}).catch(error => {
+    document.querySelector("#axiosnotif").style.display="block";
 })
 }
 else {
@@ -48,15 +50,15 @@ else {
         }
 )
     async function status(e) {
+        document.querySelector("#axiosnotif").style.display="none";
         if (window.navigator.onLine===true) {
-            document.querySelector("#connectionnotif").style.display="block";
+            document.querySelector("#connectionnotif").style.display="none";
         let cstat=0;
         e.preventDefault();
         
         if (e.target.innerText==="Inactive") {
             cstat=1;
         };
-        console.log(cstat)
         e.target.innerText="Updating..."
         e.target.style.backgroundColor="grey";
         
@@ -69,6 +71,8 @@ else {
                 e.target.innerText="Active";
                 e.target.style.backgroundColor="green";
             }
+                }).catch(error => {
+                    document.querySelector("#axiosnotif").style.display="block";
                 })
             }
             else {
@@ -77,6 +81,7 @@ else {
             }
 
     async function office(e) {
+        document.querySelector("#axiosnotif").style.display="none";
         if (window.navigator.onLine===true) {
             document.querySelector("#connectionnotif").style.display="none";
         let cstat=0;
@@ -95,6 +100,8 @@ else {
                 e.target.innerText="No";
                 e.target.style.backgroundColor="red";
                 }
+        }).catch(error => {
+            document.querySelector("#axiosnotif").style.display="block";
         })
     } else {
         document.querySelector("#connectionnotif").style.display="block";
@@ -102,6 +109,7 @@ else {
     }
 
     function geo () {
+        document.querySelector("#axiosnotif").style.display="none";
        if (window.navigator.onLine===true) {
             document.querySelector("#geob").innerText="Updating...."
             document.querySelector("#connectionnotif").style.display="none";
@@ -115,7 +123,9 @@ else {
         await axios.post('http://localhost:8000/updatecoord',{lat:position.coords.latitude,long:position.coords.longitude,id:user}).then((data)=> {
             document.querySelector("#geob").innerText="Update"
             mapp.setView([position.coords.latitude,position.coords.longitude],14);
-        }) 
+        }).catch(error => {
+            document.querySelector("#axiosnotif").style.display="block";
+        })
     }
     function maperror(error) {
             switch(error.code) {

@@ -3,13 +3,13 @@ import axios from "axios";
 export default function Login() {
   async function loginUser(credentials) {
     document.querySelector("#log").innerText="processing..."
+    document.querySelector("#axiosnotif").style.display="none";
     if (window.navigator.onLine===true) {
       document.querySelector("#connectionnotif").style.display="none";
     await axios.post('http://localhost:8000/login',JSON.stringify(credentials),{mode:"cors"}).then((data)=> {
       document.querySelector("#log").innerText="Submit"
-    //await axios.get('http://localhost:8000/login',{mode:"cors"}).then((data)=> {
-    if (data.data.id==="") {
-      console.log("user not found")
+    if (!data.data) {
+      document.querySelector("#loginerror").innerText="User not found";
     }
     else {
     localStorage.setItem('user-token', data.data.id);
@@ -22,11 +22,13 @@ export default function Login() {
       navi("/AHome")
     }
     else {
-      console.log("invalid admin")
+      console.log("User is neither admin or staff, contact your supervisor")
     }
     return true;
     }
-    })
+    }).catch(error => {
+      document.querySelector("#axiosnotif").style.display="block";
+  })
   }
   else {
     document.querySelector("#connectionnotif").style.display="block";
@@ -34,48 +36,53 @@ export default function Login() {
   }
   const navi=useNavigate();
   var admin=false
-    /*function portalswitch(e) {
-      document.querySelector("#ab").style.backgroundColor="grey"
-      document.querySelector("#sb").style.backgroundColor="grey"
-      e.preventDefault();
-      e.target.style.backgroundColor="purple";
-      if (e.target.innerText==="Administrator") {
-        admin=true;
-      }
-      else {
-        admin=false;
-      }
-      console.log(admin)
-    }*/
+
     async function login(e) {
       e.preventDefault();
+      var borderc="light-dark(rgb(118, 118, 118), rgb(133, 133, 133))"
       const ib=document.querySelector("#ID");
       const fb=document.querySelector("#FNAME")
       const lb=document.querySelector("#LNAME")
       const pb=document.querySelector("#PASSWORD")
-      if (ib.value==='' && Number.isInteger(ib.value)) {
+      ib.style.borderColor=borderc;
+      fb.style.borderColor=borderc;
+      lb.style.borderColor=borderc;
+      pb.style.borderColor=borderc;
+      var describer=document.querySelector("#loginerror")
+      describer.innerText=""
+      
+      if (ib.value==='') {
+        describer.innerText="Organisation cannot be blank"
         ib.style.borderColor="red";
+        
+      }
+      else if (Number.isFinite(parseInt(ib.value))===false) {
+        ib.style.borderColor="red";
+        describer.innerText="Organisation should be a number"
       }
       else if (fb.value==='') {
-        ib.style.borderColor="black";
+        ib.style.borderColor=borderc;
         fb.style.borderColor="red";
+        describer.innerText="First name cannot be blank"
       }
       else if (lb.value==='') {
-        fb.style.borderColor="black";
+        describer.innerText="Last name cannot be blank"
+        fb.style.borderColor=borderc;
         lb.style.borderColor="red";
       }
       else if (pb.value==='') {
-        lb.style.borderColor="black";
+        describer.innerText="Password cannot be blank"
+        lb.style.borderColor=borderc;
         pb.style.borderColor="red";
       }
       else {
-        pb.style.borderColor="black";
+        pb.style.borderColor="none";
         var hash=0
         for (var i=0;i<pb.value.length ;i++) {
           var atbl=pb.value.charCodeAt(i)
           hash +=atbl*(Math.floor(atbl/5)) *(i+1)
         }
-        await loginUser({firstName:fb.value.toString(),lastName:lb.value.toString(),password:hash,organisation:ib.value})
+        await loginUser({firstName:fb.value.toString(),lastName:lb.value.toString(),password:hash,organisation:parseInt(ib.value)})
        
     }
     }
@@ -91,6 +98,7 @@ export default function Login() {
           <input id="LNAME"></input>
           <p>Password</p>
           <input type="password"id="PASSWORD"></input>
+          <p id="loginerror"></p>
           <button id="log" onClick={login}>Login</button>
         </div>
       );
