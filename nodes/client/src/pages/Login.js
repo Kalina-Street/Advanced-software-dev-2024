@@ -91,13 +91,13 @@ export default function Login() {
           {/*<button id="ab" onClick={portalswitch}>Administrator</button>*/}
           {/*<button id="sb" onClick={portalswitch}>Staff</button>*/}
           <p>Organisation ID</p>
-          <input id="ID"></input>
+          <input id="ID" autoComplete="off"></input>
           <p>First name</p>
-          <input id="FNAME"></input>
+          <input id="FNAME" autoComplete="off"></input>
           <p>Last name</p>
-          <input id="LNAME"></input>
+          <input id="LNAME" autoComplete="off"></input>
           <p>Password</p>
-          <input type="password"id="PASSWORD"></input>
+          <input type="password"autoComplete="off" id="PASSWORD"></input>
           <p id="loginerror"></p>
           <button id="log" onClick={login}>Login</button>
         </div>
