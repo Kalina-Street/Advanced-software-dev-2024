@@ -51,26 +51,26 @@ export default function Login() {
       var describer=document.querySelector("#loginerror")
       describer.innerText=""
       
-      if (ib.value==='') {
+      if (ib.value.trim()==="") {
         describer.innerText="Organisation cannot be blank"
         ib.style.borderColor="red";
         
       }
-      else if (Number.isFinite(parseInt(ib.value))===false) {
+      else if (Number.isFinite(parseInt(ib.value.trim()))===false) {
         ib.style.borderColor="red";
         describer.innerText="Organisation should be a number"
       }
-      else if (fb.value==='') {
+      else if (fb.value.trim()==="") {
         ib.style.borderColor=borderc;
         fb.style.borderColor="red";
         describer.innerText="First name cannot be blank"
       }
-      else if (lb.value==='') {
+      else if (lb.value.trim()==="") {
         describer.innerText="Last name cannot be blank"
         fb.style.borderColor=borderc;
         lb.style.borderColor="red";
       }
-      else if (pb.value==='') {
+      else if (pb.value.trim()==="") {
         describer.innerText="Password cannot be blank"
         lb.style.borderColor=borderc;
         pb.style.borderColor="red";

@@ -5,11 +5,13 @@ import axios from "axios";
 export default function Stask() {
     async function postnote(e) {
         document.querySelector("#axiosnotif").style.display="none";
+        document.querySelector("#notevalue").style.borderColor="light-dark(rgb(118, 118, 118), rgb(133, 133, 133))"
         if (window.navigator.onLine===true) {
             document.querySelector("#connectionnotif").style.display="none";
         e.preventDefault();
         var id=document.querySelector("#notetitle").title;
         var note=document.querySelector("#notevalue").value;
+        if (!note.trim()==="") {
         e.target.innerText="sending..."
         await axios.post('http://localhost:8000/newnote',JSON.stringify({"task":id,"description":note}),{mode:"cors"}).then((data)=> {
             closer();
@@ -18,11 +20,16 @@ export default function Stask() {
         })
     }
     else {
+        document.querySelector("#notevalue").style.borderColor="red";
+    }
+    }
+    else {
         document.querySelector("#connectionnotif").style.display="block";
     }
     }
     function closer() {
         document.querySelector("#notepopup").style.display="none";
+        document.querySelector("#notevalue").style.borderColor="light-dark(rgb(118, 118, 118), rgb(133, 133, 133))"
         document.querySelector("#notegallery").style.display="none";
         var notes=document.querySelectorAll(".tempnote");
         for (var i=0;i<notes.length;i++) {
