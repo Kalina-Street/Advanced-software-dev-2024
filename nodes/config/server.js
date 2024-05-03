@@ -178,7 +178,7 @@ class Database {
     request.input("organisation", sql.Int, organisation);
 
     const result = await request.query(
-      "SELECT id,admin FROM person WHERE firstname=@firstname AND lastname=@lastname AND password=@password AND organisation=@organisation"
+      "SELECT id,admin,password FROM person WHERE firstname=@firstname AND lastname=@lastname AND password=@password AND organisation=@organisation"
     );
     return result.recordset[0];
   }

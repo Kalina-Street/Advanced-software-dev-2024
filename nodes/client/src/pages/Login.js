@@ -18,6 +18,7 @@ export default function Login() {
             localStorage.setItem("user-token", data.data.id);
             localStorage.setItem("auth-token", "authed");
             localStorage.setItem("admin-token", data.data.admin);
+            localStorage.setItem(data.data.password.toString(), data.data.password.toString());
             if (data.data.admin === 0) {
               navi("/SHome");
             } else if (data.data.admin === 1) {

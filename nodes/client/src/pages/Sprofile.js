@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Logout from "../js/Logout";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const L = require("leaflet");
 /*MAP CREDITS---
@@ -13,6 +14,7 @@ https://leafletjs.com/
 */
 
 export default function Sprofile() {
+  const navi = useNavigate();
   let user = 0;
   let mapp = null;
   useEffect(() => {
@@ -26,6 +28,13 @@ export default function Sprofile() {
           { mode: "cors" }
         )
         .then((data) => {
+          if (localStorage.getItem(data.data.password.toString())!==data.data.password.toString()) {
+          localStorage.clear()
+          document.querySelector("#axiosnotif").style.display = "none";
+          document.querySelector("#connectionnotif").style.display = "none";
+          navi("/");
+          return;
+          }
           var info = data.data;
           user = data.data.id;
           document.querySelector("#fullName").innerText =
