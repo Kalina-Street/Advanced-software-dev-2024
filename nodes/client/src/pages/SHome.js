@@ -9,7 +9,7 @@ export default function SHome() {
   return (
     <div id="outer">
       <Tabs id="tasktab" className="tabchanger" text="Tasks"></Tabs>
-      <Tabs id="profiletab" className="tabchanger" text="Profile"></Tabs>
+      <Tabs id="profiletab" className="tabchanger" text="Profile"> </Tabs>
       <div id="rootx">
         <Stask></Stask>
         <Sprofile></Sprofile>
