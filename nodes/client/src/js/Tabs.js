@@ -1,29 +1,21 @@
-export default function Tabs() {
+export default function Tabs(props) {
   function tabswitch(e) {
     e.preventDefault();
-    document.querySelector("#tasktab").style.backgroundColor = "white";
-    document.querySelector("#profiletab").style.backgroundColor = "white";
-    e.target.style.backgroundColor = "black";
-    if (e.target.innerText === "Tasks") {
-      document.querySelector("#task").style.display = "block";
-      document.querySelector("#profile").style.display = "none";
-    } else if (e.target.innerText === "Profile") {
-      document.querySelector("#profile").style.display = "block";
-      document.querySelector("#task").style.display = "none";
+    let tabs=document.querySelectorAll("." + e.target.className)
+    for (let i=0;i<tabs.length;i++) {
+      tabs[i].style.backgroundColor="white"
     }
+    let hide=document.querySelectorAll("."+e.target.className +"hide") 
+    for (let x=0;x<hide.length;x++) {
+      hide[x].style.display="none"
+    }
+    e.target.style.backgroundColor="black";
+    document.querySelector("#" + e.target.id.replace("tab","")).style.display="block"
   }
   return (
-    <div>
-      <button id="tasktab" onClick={tabswitch}>
-        Tasks
+      <button id={props.id}  style={props.style} className={props.className} onClick={tabswitch}>
+        {props.text}
       </button>
-      <button
-        style={{ backgroundColor: "black" }}
-        id="profiletab"
-        onClick={tabswitch}
-      >
-        Profile
-      </button>
-    </div>
+
   );
 }

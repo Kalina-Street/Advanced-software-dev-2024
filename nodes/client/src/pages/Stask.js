@@ -1,6 +1,7 @@
 import Filler from "../js/Filler";
 import Tasktab from "../js/Tasktab";
 import axios from "axios";
+import Tabs from "../js/Tabs";
 
 export default function Stask() {
   async function postnote(e) {
@@ -47,13 +48,16 @@ export default function Stask() {
     document.querySelector("#noteValue").value = "";
   }
   return (
-    <div style={{ display: "none" }} id="task">
+    <div style={{ display: "none" }} id="task" className="tabchangerhide">
       <div id="nonPopup">
         <p>Task page</p>
         <div>
-          <Tasktab text="Urgent" colour="black"></Tasktab>
+        <Tabs id="Urgentwrappertab" className="filler" text="Urgent"></Tabs>
+      <Tabs id="Routinewrappertab" className="filler" text="Routine"></Tabs>
+      <Tabs id="Otherwrappertab" className="filler" text="Other"></Tabs>
+          {/*<Tasktab text="Urgent" colour="black"></Tasktab>
           <Tasktab text="Routine" colour="white"></Tasktab>
-          <Tasktab text="Other" colour="white"></Tasktab>
+  <Tasktab text="Other" colour="white"></Tasktab>*/}
         </div>
         <div>
           <Filler id="Urgent" display="block"></Filler>

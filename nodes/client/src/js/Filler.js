@@ -203,7 +203,7 @@ export default function Filler(props) {
     <div
       id={props.id + "wrapper"}
       style={{ display: props.display }}
-      className="filler"
+      className="fillerhide"
     >
       <p id={props.id + "loader"}>Loading....</p>
       <div

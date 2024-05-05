@@ -192,7 +192,7 @@ export default function Sprofile() {
     }
   }
   return (
-    <div style={{ display: "block" }} id="profile">
+    <div style={{ display: "block" }} id="profile" className="tabchangerhide">
       <p id="profileLoader">Loading...</p>
       <div id="profileContent" style={{ display: "none" }}>
         <div>
