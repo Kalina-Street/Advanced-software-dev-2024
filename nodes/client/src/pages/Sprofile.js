@@ -71,6 +71,7 @@ export default function Sprofile() {
     }
   });
   async function status(e) {
+    if (e.target.innerText !== "Updating...") {
     document.querySelector("#axiosnotif").style.display = "none";
     if (window.navigator.onLine === true) {
       document.querySelector("#connectionnotif").style.display = "none";
@@ -108,8 +109,10 @@ export default function Sprofile() {
       document.querySelector("#connectionnotif").style.display = "block";
     }
   }
+  }
 
   async function office(e) {
+    if (e.target.innerText !== "Updating...") {
     document.querySelector("#axiosnotif").style.display = "none";
     if (window.navigator.onLine === true) {
       document.querySelector("#connectionnotif").style.display = "none";
@@ -145,8 +148,10 @@ export default function Sprofile() {
       document.querySelector("#connectionnotif").style.display = "block";
     }
   }
+  }
 
   function geo() {
+    if (document.querySelector("#locationButton").innerText !== "Updating...") {
     document.querySelector("#axiosnotif").style.display = "none";
     if (window.navigator.onLine === true) {
       document.querySelector("#locationButton").innerText = "Updating....";
@@ -174,6 +179,7 @@ export default function Sprofile() {
       .catch((error) => {
         document.querySelector("#axiosnotif").style.display = "block";
       });
+    }
   }
   function maperror(error) {
     switch (error.code) {
