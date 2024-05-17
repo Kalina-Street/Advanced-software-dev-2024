@@ -1,0 +1,23 @@
+input{
+
+    margin-left: 45.5%;
+    border: none;
+    border-bottom: solid;
+    outline: none;
+}
+
+
+p{
+    text-align: center;
+    background-color: black;
+    color: white;
+    width: 8%;
+}
+
+ h1{
+    text-align: center;
+ }
+
+ button{
+    margin-left: 49%;
+ }
