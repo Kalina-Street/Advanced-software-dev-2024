@@ -321,6 +321,118 @@ class Database {
 
     return result.rowsAffected[0];
   }
+
+//Admin Side Database:
+//Create Task Function - Alex
+async addTask(data) {
+  var connectionstat = await this.connect();
+  console.log(connectionstat);
+  const request = this.poolconnection.request();
+  request.input("id", sql.Int, data.id);
+  request.input("title", sql.NVarChar(255), data.title);
+  request.input("description", sql.NVarChar(500), data.description);
+  request.input("category", sql.NVarChar(30), data.category);
+  request.input("startdate", sql.Date, data.date);
+  request.input("duration", sql.Int, data.duration);
+  request.input("organisation", sql.Int, data.organisation);
+  request.input("complete", sql.TinyInt, 0);
+  const result = await request.query(
+    "INSERT INTO tasks (id,title,description,category,startdate,duration,organisation,complete) VALUES (@id,@title,@description,@category,@startdate,@duration,@organisation,@complete)"
+  );
+  return result.rowsAffected[0];
+}
+
+//Get Task Function - Alex
+async getTasks() {
+  var connectionstat = await this.connect();
+  console.log(connectionstat);
+  const request = this.poolconnection.request();
+  const result = await request
+    .query("SELECT * FROM tasks where complete=0");
+
+  return result.recordset;
+}
+
+//Get Completed Tasks Function - Alex
+async getCompletedTasks() {
+  var connectionstat = await this.connect();
+  console.log(connectionstat);
+  const request = this.poolconnection.request();
+  const result = await request
+    .query("SELECT * FROM tasks where complete=1");
+
+  return result.recordset;
+}
+
+//Create Employee Function - Alex
+async addEmployee(data) {
+  var connectionstat = await this.connect();
+  console.log(connectionstat);
+  const request = this.poolconnection.request();
+  request.input("id", sql.Int, data.id);
+  request.input("firstname", sql.NVarChar(255), data.firstName);
+  request.input("lastname", sql.NVarChar(255), data.lastName);
+  request.input("password", sql.Int, data.password);
+  request.input("organisation", sql.Int, data.organisation);
+  request.input("admin", sql.TinyInt, data.admin);
+  const result = await request.query(
+    "INSERT INTO person (id, firstname, lastname, password, organisation, admin) VALUES (@id, @firstname, @lastname, @password, @organisation, @admin)"
+  );
+  return result.rowsAffected[0];
+}
+
+//Get Employee ID + Name for all employees Function - Alex
+async getEmployeeInfo() {
+  var connectionstat = await this.connect();
+  console.log(connectionstat);
+
+  const request = this.poolconnection.request();
+  const result = await request
+    .query("SELECT id, firstname, lastname FROM person");
+
+    console.log(result.recordset);
+  return result.recordset;
+}
+
+//Get all information for a specific employee using id - Alex
+async getSpecificEmployeeInfo(employeeID) {
+  var connectionstat = await this.connect();
+  console.log(connectionstat);
+  const request = this.poolconnection.request();
+  const result = await request
+    .query("SELECT * FROM person WHERE id =" + employeeID);
+
+  return result.recordset;
+}
+
+//Delete employee by id - Alex
+async deleteEmployee(id) {
+  var connectionstat = await this.connect();
+  console.log(connectionstat);
+
+  const employeeID = Number(id);
+  const request = this.poolconnection.request();
+  const result = await request
+    .input("id", sql.Int, employeeID)
+    .query("DELETE FROM person WHERE id=@id");
+
+  return result.rowsAffected[0];
+}
+
+//Delete task by id - Alex
+async deleteTask(id) {
+  var connectionstat = await this.connect();
+  console.log(connectionstat);
+
+  const taskID = Number(id);
+  const request = this.poolconnection.request();
+  const result = await request
+    .input("id", sql.Int, taskID)
+    .query("DELETE FROM tasks WHERE id=@id");
+
+  return result.rowsAffected[0];
+}
+
 }
 let connector = new Database();
 //connector.createuser({id:2,firstName:"Kamil",lastName:"Kozibura",password:2645,organisation:1,status:0,inoffice:0,lat:12.0,long:12.0,admin:1});
@@ -496,3 +608,69 @@ async function datachunk(chunks) {
   data = parse;
   return data;
 }
+
+// API Calls for Admin Side Database
+//Post call for new tasks - Alex
+app.post("/tasks", async (req, res) => {
+  let chunks = [];
+  req.on("data", async (chunk) => {
+    chunks.push(chunk);
+  });
+  req.on("end", async () => {
+    let data = await datachunk(chunks);
+    records = await connector.addTask(data);
+    res.send(records);
+  });
+});
+
+//Get call for active tasks - Alex
+app.get("/tasks", async (req, res) => {
+  records = await connector.getTasks();
+  res.send(records);
+});
+
+//Get call for completed tasks - Alex
+app.get("/tasks/completed", async (req, res) => {
+  records = await connector.getCompletedTasks();
+  res.send(records);
+});
+
+// Post call for new employees - Alex
+app.post("/employees", async (req, res) => {
+  let chunks = [];
+  req.on("data", async (chunk) => {
+    chunks.push(chunk);
+  });
+  req.on("end", async () => {
+    let data = await datachunk(chunks);
+    records = await connector.addEmployee(data);
+    res.send(records);
+  });
+});
+
+//Get call for employee ID + Name info - Alex
+app.get("/employees", async (req, res) => {
+    let records = await connector.getEmployeeInfo();
+    res.send(records);
+});
+
+//Get call for all information for single employee - Alex
+app.get("/employees/:id", async (req, res) => {
+  const employeeID = req.params.id;
+  records = await connector.getSpecificEmployeeInfo(employeeID);
+  res.send(records);
+});
+
+//Delete call for employee by id - Alex
+app.delete("/employees/:id", async (req, res) => {
+  const employeeID = req.params.id;
+  records = await connector.deleteEmployee(employeeID);
+  res.send(records);
+});
+
+//Delete call for tasks by id - Alex
+app.delete("/tasks/:id", async (req, res) => {
+  const taskID = req.params.id;
+  records = await connector.deleteTask(taskID);
+  res.send(records);
+});
