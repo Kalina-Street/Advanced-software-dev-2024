@@ -1,5 +1,7 @@
+
 /*Adding Staff Page*/
 /*Feature for adding/creating new staff members - Kamil*/
+
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -7,6 +9,7 @@ import axios from 'axios';
 //Creates function for adding new staff memebers
 export default function AddStaff() {
     //all peramters for staff member
+
     const [id, setId] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -16,6 +19,7 @@ export default function AddStaff() {
     const navigate = useNavigate();
 
     //function for hashing password when created
+
     const hashPassword = (password) => {
         let hash = 0;
         for (let i = 0; i < password.length; i++) {
@@ -51,6 +55,7 @@ export default function AddStaff() {
 
     return (
         //display 'none' prevents the page from appearing at the start after login
+
         <div style={{ display: "none" }} id="addstaff" class="tabchangerhide">
             <h1>Add New Staff Member</h1>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '300px' }}>
@@ -112,3 +117,4 @@ export default function AddStaff() {
         </div>
     );
 }
+

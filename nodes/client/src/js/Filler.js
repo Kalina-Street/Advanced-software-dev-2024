@@ -208,7 +208,7 @@ export default function Filler(props) {
       <p id={props.id + "loader"}>Loading....</p>
       <div
         id={props.id}
-        style={{ display: "none", overflowY: "scroll", height: 80 + "vh" }}
+        style={{ display: "none", overflowY: "scroll", height: 75 + "vh" }}
       ></div>
     </div>
   );
