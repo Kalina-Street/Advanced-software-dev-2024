@@ -1,32 +1,29 @@
-div{
-    font-size: 180%;
+#login main{
+    font-size: 300%;
     margin: auto;
     padding: 0px;
     text-align: center;
-    border: 1px solid black;
-    background-color: white;
-    border-radius: 20px;
-    height: 770px;
-    width: 390px;
+
 }
-input{
+#login input{
 
     text-align: center;
     border: none;
     font-size: 1cm;
     border-bottom: solid;
     outline: none;
-    width: 60%;
+    width: 100%;
+    max-width: 300px;
     margin-bottom: 15px;
 }
 
- button{
+#login button{
     text-align: center;
     padding: 2px;
     scale: 2;
- }
+ } 
 
-p{
+#login p{
     margin: auto;
     font-size: 50%;
     text-align: center;
@@ -35,4 +32,8 @@ p{
     width: 300px;
     height: 50px;
     
+}
+
+#loginerror {
+    border:unset !important;
 }

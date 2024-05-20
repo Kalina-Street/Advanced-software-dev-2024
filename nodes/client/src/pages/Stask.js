@@ -50,7 +50,6 @@ export default function Stask() {
   return (
     <div style={{ display: "none" }} id="task" className="tabchangerhide">
       <div id="nonPopup">
-        <p>Task page</p>
         <div>
         <Tabs id="Urgentwrappertab" className="filler" text="Urgent"></Tabs>
       <Tabs id="Routinewrappertab" className="filler" text="Routine"></Tabs>
@@ -69,6 +68,8 @@ export default function Stask() {
         <p id="noteTitle"></p>
         <p>Details</p>
         <textarea id="noteValue"></textarea>
+        <br>
+        </br>
         <button onClick={closer}>Close</button>
         <button onClick={postnote}>Submit</button>
       </div>

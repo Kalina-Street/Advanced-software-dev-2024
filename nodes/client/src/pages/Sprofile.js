@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Logout from "../js/Logout";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../css/SProfile.css"
 
 const L = require("leaflet");
 /*MAP CREDITS---
@@ -201,7 +202,7 @@ export default function Sprofile() {
     <div style={{ display: "block" }} id="profile" className="tabchangerhide">
       <p id="profileLoader">Loading...</p>
       <div id="profileContent" style={{ display: "none" }}>
-        <div>
+        <div> 
           <p id="fullName">Name</p>
         </div>
         <div>
@@ -235,7 +236,7 @@ export default function Sprofile() {
           >
             Update
           </button>
-          <div style={{ height: 200 + "px", width: 800 + "px" }} id="map"></div>
+          <div style={{ height: 200 + "px", width: 100 + "%" }} id="map"></div>
         </div>
       </div>
     </div>
