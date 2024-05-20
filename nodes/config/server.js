@@ -348,7 +348,7 @@ async getTasks() {
   console.log(connectionstat);
   const request = this.poolconnection.request();
   const result = await request
-    .query("SELECT * FROM tasks where complete=0");
+    .query("SELECT * FROM tasks WHERE complete=0");
 
   return result.recordset;
 }
@@ -359,7 +359,7 @@ async getCompletedTasks() {
   console.log(connectionstat);
   const request = this.poolconnection.request();
   const result = await request
-    .query("SELECT * FROM tasks where complete=1");
+    .query("SELECT * FROM tasks WHERE complete=1");
 
   return result.recordset;
 }
