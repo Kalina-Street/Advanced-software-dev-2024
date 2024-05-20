@@ -1,3 +1,5 @@
+//Admin Home Page//
+//Calls the other tabs from Admin side - Kamil//
 import { useEffect } from "react";
 import Logout from "../js/Logout";
 import Tabs from "../js/Tabs";
@@ -6,6 +8,9 @@ import Addstaff from "./Addstaff";
 import Staffsearch from "./Staffsearch";
 import Atask from "./Atask";
 import axios from "axios";
+
+
+//creates function to combine all tabs/files
 
 export default function AHome() {
   return (
