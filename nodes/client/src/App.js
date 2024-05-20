@@ -43,6 +43,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
+        <Route
+        path="*"
+          element={
+            <ProtectedRoute>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

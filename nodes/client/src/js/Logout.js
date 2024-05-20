@@ -19,5 +19,5 @@ export default function Logout() {
           navi("/");
         })
   }
-  return <button onClick={exi}>Logout</button>;
+  return <button id="logout" onClick={exi}>Logout</button>;
 }

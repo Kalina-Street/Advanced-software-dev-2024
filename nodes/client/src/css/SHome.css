@@ -1,0 +1,45 @@
+#outer div{
+    margin: auto;
+    text-align: center;
+    
+}
+
+#Other {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#Routine {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#urgent {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#outer outermain{
+    text-align: center;
+}
+
+#outer orgname{
+    text-align: center;
+}
+
+#outer Tabs{
+    text-align: center;
+}
+
+#props.id button{
+    margin: auto;
+    padding: 2px;
+    scale: 2;
+ }
+
+ #gallerycloser {
+    height: 40px;
+    font-size: 150%;
+    margin-bottom: 1%;
+  }
+  

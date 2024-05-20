@@ -9,7 +9,7 @@ export default function Tabs(props) {
     for (let x=0;x<hide.length;x++) {
       hide[x].style.display="none"
     }
-    e.target.style.backgroundColor="black";
+    e.target.style.backgroundColor="Gray";
     document.querySelector("#" + e.target.id.replace("tab","")).style.display="block"
   }
   return (
