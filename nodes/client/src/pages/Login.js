@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../css/Login.css"
+
 export default function Login() {
   async function loginUser(credentials) {
     document.querySelector("#log").innerText = "processing...";
@@ -92,7 +94,9 @@ export default function Login() {
     }
   }
   return (
-    <div>
+    <div id="login">
+      <main>
+      <h>Welcome</h>
       <p>Organisation ID</p>
       <input id="ID" autoComplete="off"></input>
       <p>First name</p>
@@ -105,6 +109,8 @@ export default function Login() {
       <button id="log" onClick={login}>
         Login
       </button>
+      </main>  
     </div>
   );
 }
+
