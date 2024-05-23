@@ -57,7 +57,7 @@ export default function Atask() {
         const newTask = {
             title: newTaskTitle,
             type: newTaskCategory,
-            duration: newTaskDuration,
+            duration: newTaskDuration*1000*60*60,
             createdDate: new Date().toISOString(),
             organisation,
             status: 'pending'
@@ -65,7 +65,7 @@ export default function Atask() {
 
         //displays fillers when starting
         try {
-            await axios.post('http://localhost:8000/tasks', newTask);
+            await axios.post('http://localhost:8000/tasks/new', newTask);
             setNewTaskTitle("");
             setNewTaskDescription("");
             setNewTaskCategory("routine");

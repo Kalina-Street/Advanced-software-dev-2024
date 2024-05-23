@@ -328,7 +328,9 @@ async addTask(data) {
   var connectionstat = await this.connect();
   console.log(connectionstat);
   const request = this.poolconnection.request();
-  request.input("id", sql.Int, data.id);
+
+  const maxid = await request.query("SELECT MAX(id) AS id FROM tasks");
+  request.input("id", sql.Int, maxid.recordset[0].id + 1);
   request.input("title", sql.NVarChar(255), data.title);
   request.input("description", sql.NVarChar(500), data.description);
   request.input("category", sql.NVarChar(30), data.category);
@@ -369,7 +371,8 @@ async addEmployee(data) {
   var connectionstat = await this.connect();
   console.log(connectionstat);
   const request = this.poolconnection.request();
-  request.input("id", sql.Int, data.id);
+  const maxid = await request.query("SELECT MAX(id) AS id FROM person");
+  request.input("id", sql.Int, maxid.recordset[0].id + 1);
   request.input("firstname", sql.NVarChar(255), data.firstName);
   request.input("lastname", sql.NVarChar(255), data.lastName);
   request.input("password", sql.Int, data.password);
@@ -611,7 +614,7 @@ async function datachunk(chunks) {
 
 // API Calls for Admin Side Database
 //Post call for new tasks - Alex
-app.post("/tasks", async (req, res) => {
+app.post("/tasks/new", async (req, res) => {
   let chunks = [];
   req.on("data", async (chunk) => {
     chunks.push(chunk);
