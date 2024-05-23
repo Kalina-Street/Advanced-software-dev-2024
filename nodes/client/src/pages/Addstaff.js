@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import "../css/Admin.css"
 
 //Creates function for adding new staff memebers
 export default function AddStaff() {
