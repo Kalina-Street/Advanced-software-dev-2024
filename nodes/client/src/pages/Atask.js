@@ -103,7 +103,6 @@ export default function Atask() {
                     <li key={task.id}>
                         {task.title} - {task.organisation} - {task.type} - {Math.round(task.duration / 1000 / 60 / 60 * 100) / 100} hours
                         <button onClick={() => deleteTask(task.id)}>Delete</button>
-                        <button onClick={() => navigate(`/assign/${task.id}`)}>Assign to User</button>
                     </li>
                 ))}
             </ul>
