@@ -18,6 +18,7 @@ export default function Login() {
             document.querySelector("#loginerror").innerText = "User not found";
           } else {
             localStorage.setItem("user-token", data.data.id);
+            localStorage.setItem("org-token", data.data.organisation);
             localStorage.setItem("auth-token", "authed");
             localStorage.setItem("admin-token", data.data.admin);
             localStorage.setItem(data.data.password.toString(), data.data.password.toString());

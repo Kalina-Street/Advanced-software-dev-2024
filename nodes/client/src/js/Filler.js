@@ -78,7 +78,7 @@ export default function Filler(props) {
         document.querySelector("#connectionnotif").style.display = "none";
         hasFetched = true;
         await axios
-          .post("http://localhost:8000/tasks", JSON.stringify(props.id), {
+          .post("http://localhost:8000/tasks", JSON.stringify({"category":props.id,"organisation":localStorage.getItem("org-token")}), {
             mode: "cors",
           })
           .then(async (data) => {
