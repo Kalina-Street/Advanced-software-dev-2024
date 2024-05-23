@@ -14,7 +14,7 @@ export default function Stask() {
       e.preventDefault();
       var id = document.querySelector("#noteTitle").title;
       var note = document.querySelector("#noteValue").value;
-      if (!note.trim() === "") {
+      if (note.trim() !== "") {
         e.target.innerText = "sending...";
         await axios
           .post(
