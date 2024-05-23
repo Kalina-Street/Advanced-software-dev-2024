@@ -10,7 +10,6 @@ import axios from 'axios';
 export default function AddStaff() {
     //all peramters for staff member
 
-    const [id, setId] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
@@ -35,7 +34,6 @@ export default function AddStaff() {
         const hashedPassword = hashPassword(password);
 
         const newStaff = {
-            id,
             firstName,
             lastName,
             password: hashedPassword,
@@ -59,16 +57,6 @@ export default function AddStaff() {
         <div style={{ display: "none" }} id="addstaff" class="tabchangerhide">
             <h1>Add New Staff Member</h1>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '300px' }}>
-                <label>
-                    ID:
-                    <input
-                        type="text"
-                        name="id"
-                        value={id}
-                        onChange={(e) => setId(e.target.value)}
-                        required
-                    />
-                </label>
                 <label>
                     First Name:
                     <input
