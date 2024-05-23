@@ -11,9 +11,10 @@ export default function Atask() {
     const [completedTasks, setCompletedTasks] = useState([]);
     const [availableTasks, setAvailableTasks] = useState([]);
     const [newTaskTitle, setNewTaskTitle] = useState("");
-    const [newTaskType, setNewTaskType] = useState("routine");
+    const [newTaskDescription, setNewTaskDescription] = useState("");
+    const [newTaskCategory, setNewTaskCategory] = useState("routine");
     const [newTaskDuration, setNewTaskDuration] = useState(0);
-    const [assignee, setAssignee] = useState("");
+    const [organisation, setOrganisation] = useState("");
 
     const navigate = useNavigate();
 
@@ -55,10 +56,10 @@ export default function Atask() {
     const assignTask = async () => {
         const newTask = {
             title: newTaskTitle,
-            type: newTaskType,
+            type: newTaskCategory,
             duration: newTaskDuration,
             createdDate: new Date().toISOString(),
-            assignee,
+            organisation,
             status: 'pending'
         };
 
@@ -66,9 +67,10 @@ export default function Atask() {
         try {
             await axios.post('http://localhost:8000/tasks', newTask);
             setNewTaskTitle("");
-            setNewTaskType("routine");
+            setNewTaskDescription("");
+            setNewTaskCategory("routine");
             setNewTaskDuration(0);
-            setAssignee("");
+            setOrganisation("");
             fetchAvailableTasks();
         } catch (error) {
             console.error("Error assigning task:", error);
@@ -84,7 +86,7 @@ export default function Atask() {
             <ul>
                 {completedTasks.map(task => (
                     <li key={task.id}>
-                        {task.title} - {task.assignee}
+                        {task.title} - {task.organisation}
                         <button onClick={() => deleteTask(task.id)}>Delete</button>
                     </li>
                 ))}
@@ -94,7 +96,7 @@ export default function Atask() {
             <ul>
                 {availableTasks.map(task => (
                     <li key={task.id}>
-                        {task.title} - {task.assignee} - {task.type} - {Math.round(task.duration/1000/60/60*100)/100} hours
+                        {task.title} - {task.organisation} - {task.type} - {Math.round(task.duration/1000/60/60*100)/100} hours
                         <button onClick={() => deleteTask(task.id)}>Delete</button>
                         <button onClick={() => navigate(`/assign/${task.id}`)}>Assign to User</button>
                     </li>
@@ -109,9 +111,15 @@ export default function Atask() {
                     value={newTaskTitle}
                     onChange={(e) => setNewTaskTitle(e.target.value)}
                 />
+                <input
+                    type="text"
+                    placeholder="Task Description"
+                    value={newTaskDescription}
+                    onChange={(e) => setNewTaskDescription(e.target.value)}
+                />
                 <select
-                    value={newTaskType}
-                    onChange={(e) => setNewTaskType(e.target.value)}
+                    value={newTaskCategory}
+                    onChange={(e) => setNewTaskCategory(e.target.value)}
                 >
                     <option value="urgent">Urgent</option>
                     <option value="routine">Routine</option>
@@ -125,9 +133,9 @@ export default function Atask() {
                 />
                 <input
                     type="text"
-                    placeholder="Assignee"
-                    value={assignee}
-                    onChange={(e) => setAssignee(e.target.value)}
+                    placeholder="Organisation"
+                    value={organisation}
+                    onChange={(e) => setOrganisation(e.target.value)}
                 />
                 <button onClick={assignTask}>Assign Task</button>
             </div>
