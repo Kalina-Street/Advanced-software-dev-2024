@@ -178,7 +178,7 @@ class Database {
     request.input("organisation", sql.Int, organisation);
 
     const result = await request.query(
-      "SELECT id,admin,password FROM person WHERE firstname=@firstname AND lastname=@lastname AND password=@password AND organisation=@organisation"
+      "SELECT id,admin,password,organisation FROM person WHERE firstname=@firstname AND lastname=@lastname AND password=@password AND organisation=@organisation"
     );
     return result.recordset[0];
   }
@@ -211,14 +211,15 @@ class Database {
 
     return result.recordset;
   }
-  async taskcat(category) {
+  async taskcat(category,organisation) {
     var connectionstat = await this.connect();
     console.log(connectionstat);
 
     const request = this.poolconnection.request();
     request.input("category", sql.NVarChar(30), category);
+    request.input("organisation", sql.Int, parseInt(organisation));
     const result = await request.query(
-      "SELECT * FROM tasks WHERE category=@category AND complete=0"
+      "SELECT * FROM tasks WHERE category=@category AND complete=0 AND organisation=@organisation"
     );
 
     return result.recordset;
@@ -507,7 +508,7 @@ app.post("/tasks", async (req, res) => {
   req.on("end", async () => {
     let cat = await datachunk(chunks);
 
-    let tasks = await connector.taskcat(cat);
+    let tasks = await connector.taskcat(cat.category,cat.organisation);
     res.send(tasks);
   });
 });
