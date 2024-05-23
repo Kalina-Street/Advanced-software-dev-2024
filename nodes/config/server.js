@@ -400,7 +400,7 @@ async getSpecificEmployeeInfo(employeeID) {
   console.log(connectionstat);
   const request = this.poolconnection.request();
   const result = await request
-    .query("SELECT * FROM person WHERE id =" + employeeID);
+    .query("SELECT * FROM person WHERE id=" + employeeID);
 
   return result.recordset;
 }
@@ -619,7 +619,7 @@ app.post("/tasks", async (req, res) => {
   req.on("end", async () => {
     let data = await datachunk(chunks);
     records = await connector.addTask(data);
-    res.send(records);
+    res.send(200);
   });
 });
 
@@ -644,7 +644,7 @@ app.post("/employees", async (req, res) => {
   req.on("end", async () => {
     let data = await datachunk(chunks);
     records = await connector.addEmployee(data);
-    res.send(records);
+    res.send(200);
   });
 });
 
@@ -665,12 +665,12 @@ app.get("/employees/:id", async (req, res) => {
 app.delete("/employees/:id", async (req, res) => {
   const employeeID = req.params.id;
   records = await connector.deleteEmployee(employeeID);
-  res.send(records);
+  res.send(200);
 });
 
 //Delete call for tasks by id - Alex
 app.delete("/tasks/:id", async (req, res) => {
   const taskID = req.params.id;
   records = await connector.deleteTask(taskID);
-  res.send(records);
+  res.send(200);
 });

@@ -9,6 +9,7 @@ export default function SearchStaff() {
     //Creats constant variables
     const [employees, setEmployees] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
     const navigate = useNavigate();
 
     //Fetches employees using useEffect
@@ -16,20 +17,45 @@ export default function SearchStaff() {
         fetchEmployees();
     }, []);
 
+    /*const fetchEmployees = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/employees');
+            const lowerSearchName = searchTerm.toLowerCase();
+    
+            const filteredEmployees = response.data.filter(employee => {
+                const fullName = `${employee.firstname} ${employee.lastname}`.toLowerCase();
+                return fullName.includes(lowerSearchName);
+            });
+    
+            return filteredEmployees; // Return the filtered list
+        } catch (error) {
+            console.error('Error fetching employees:', error);
+            return []; // Return an empty array in case of an error
+        }
+    };*/
+
     const fetchEmployees = async () => {
         try {
-            const response = await axios.get('/api/employees');
-            //compares the first name and lastname using localeCompare so admin can search using either
-            const sortedEmployees = response.data.sort((a, b) => a.name.localeCompare(b.name));
-            setEmployees(sortedEmployees);
+            const response = await axios.get('http://localhost:8000/employees');
+            const lowerSearchName = searchTerm.toLowerCase();
+
+            const filteredResults = response.data.filter(employee => {
+                const fullName = `${employee.firstname} ${employee.lastname}`.toLowerCase();
+                return fullName.includes(lowerSearchName);
+            });
+
+            setFilteredEmployees(filteredResults);
         } catch (error) {
-            console.error("Error fetching employees:", error);
+            console.error('Error fetching employees:', error);
         }
     };
 
-    const filteredEmployees = employees.filter(employee =>
-        employee.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    function setId(id) {
+        localStorage.setItem("employeeId", id);
+        navigate('/viewprofile');
+    };
+    
+    // Example usage:
 
     return (
         //display 'none' prevents the page from appearing at the start after login
@@ -39,29 +65,31 @@ export default function SearchStaff() {
                 type="text"
                 placeholder="Search..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => { setSearchTerm(e.target.value); fetchEmployees();}}
                 style={{ display: "block" }}
             />
             <div style={{ display: "block" }}>
 
-                {filteredEmployees.map(employee => (
-                    <div
-                        key={employee.id}
-                        //On click opens up the staff member profile
-                        onClick={() => navigate('/viewprofile/${employee.id}')}
-                        style={{
-                            width: 'calc(20% - 10px)',
-                            padding: '20px',
-                            border: '1px solid #ccc',
-                            borderRadius: '8px',
-                            textAlign: 'center',
-                            cursor: 'pointer',
-                            boxSizing: 'border-box'
-                        }}
-                    >
-                        {employee.name}
-                    </div>
-                ))}
+            <div>
+            {/* Render the filtered employees */}
+            {filteredEmployees.map(employee => (
+                <div
+                    key={employee.id}
+                    onClick={() => setId(employee.id)} // Use backticks for template literals
+                    style={{
+                        width: 'calc(20% - 10px)',
+                        padding: '20px',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        boxSizing: 'border-box'
+                    }}
+                >
+                    {employee.firstname}
+                </div>
+            ))}
+        </div>
             </div>
         </div>
     );

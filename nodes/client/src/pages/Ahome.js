@@ -19,6 +19,7 @@ export default function AHome() {
       <Tabs id="profiletab" className="tabchanger" text="Profile"></Tabs>
       <Tabs id="searchstafftab" className="tabchanger" text="Search Staff"></Tabs>
       <Tabs id="addstafftab" className="tabchanger" text="Add Staff"></Tabs>
+      { console.log(localStorage.getItem("employeeId")) }
       <div id="rootx">
         <Atask></Atask>
         <Aprofile></Aprofile>

@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
   let location = useLocation();
-  if (location.pathname!=="/" && location.pathname!=="/SHome" && location.pathname!=="/AHome") {
+  if (location.pathname!=="/" && location.pathname!=="/SHome" && location.pathname!=="/AHome" && location.pathname!=="/viewprofile") {
     location.pathname="/"
   }
   if (localStorage.getItem("auth-token") !== "authed") {

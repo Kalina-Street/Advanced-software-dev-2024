@@ -7,6 +7,7 @@ import ProtectedRoute from "./js/protectedroute";
 import SHome from "./pages/SHome";
 import Login from "./pages/Login";
 import Ahome from "./pages/Ahome";
+import ViewProfile from "./pages/Viewprofile";
 
 function App() {
   return (
@@ -40,6 +41,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Ahome />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/viewprofile"
+          element={
+            <ProtectedRoute>
+              <ViewProfile />
             </ProtectedRoute>
           }
         />

@@ -25,7 +25,7 @@ export default function Atask() {
 
     const fetchCompletedTasks = async () => {
         try {
-            const response = await axios.get('/api/tasks/completed');
+            const response = await axios.get("http://localhost:8000/tasks/completed");
             setCompletedTasks(response.data);
         } catch (error) {
             console.error("Error fetching completed tasks:", error);
@@ -34,7 +34,7 @@ export default function Atask() {
 
     const fetchAvailableTasks = async () => {
         try {
-            const response = await axios.get('/api/tasks');
+            const response = await axios.get('http://localhost:8000/tasks');
             setAvailableTasks(response.data);
         } catch (error) {
             console.error("Error fetching available tasks:", error);
@@ -43,7 +43,7 @@ export default function Atask() {
 
     const deleteTask = async (taskId) => {
         try {
-            await axios.delete(`/api/tasks/${taskId}`);
+            await axios.delete(`http://localhost:8000/tasks/${taskId}`);
             fetchCompletedTasks();
             fetchAvailableTasks();
         } catch (error) {
@@ -64,7 +64,7 @@ export default function Atask() {
 
         //displays fillers when starting
         try {
-            await axios.post('/api/tasks', newTask);
+            await axios.post('http://localhost:8000/tasks', newTask);
             setNewTaskTitle("");
             setNewTaskType("routine");
             setNewTaskDuration(0);
