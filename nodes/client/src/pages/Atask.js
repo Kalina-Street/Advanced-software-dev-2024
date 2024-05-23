@@ -15,6 +15,7 @@ export default function Atask() {
     const [newTaskCategory, setNewTaskCategory] = useState("routine");
     const [newTaskDuration, setNewTaskDuration] = useState(0);
     const [organisation, setOrganisation] = useState("");
+    const [startDate, setStartDate] = useState("");
 
     const navigate = useNavigate();
 
@@ -52,18 +53,22 @@ export default function Atask() {
         }
     };
 
-    //paratmeters for assigning a new task
     const assignTask = async () => {
+        const currentStartDate = new Date().toISOString(); // Get the current date and time
+        setStartDate(currentStartDate);
+
         const newTask = {
             title: newTaskTitle,
+            description: newTaskDescription,
             type: newTaskCategory,
-            duration: newTaskDuration*1000*60*60,
-            createdDate: new Date().toISOString(),
+            category: newTaskCategory,
+            duration: newTaskDuration * 1000 * 60 * 60,
             organisation,
-            status: 'pending'
+            status: 'pending',
+            date: currentStartDate // Adding startDate to the new task
         };
 
-        //displays fillers when starting
+        // Displays fillers when starting
         try {
             await axios.post('http://localhost:8000/tasks/new', newTask);
             setNewTaskTitle("");
@@ -78,7 +83,7 @@ export default function Atask() {
     };
 
     return (
-        //display 'none' prevents the page from appearing at the start after login
+        // Display 'none' prevents the page from appearing at the start after login
         <div style={{ display: "none" }} id="task" className="tabchangerhide">
             <h1>Admin Task Page</h1>
 
@@ -96,7 +101,7 @@ export default function Atask() {
             <ul>
                 {availableTasks.map(task => (
                     <li key={task.id}>
-                        {task.title} - {task.organisation} - {task.type} - {Math.round(task.duration/1000/60/60*100)/100} hours
+                        {task.title} - {task.organisation} - {task.type} - {Math.round(task.duration / 1000 / 60 / 60 * 100) / 100} hours
                         <button onClick={() => deleteTask(task.id)}>Delete</button>
                         <button onClick={() => navigate(`/assign/${task.id}`)}>Assign to User</button>
                     </li>
