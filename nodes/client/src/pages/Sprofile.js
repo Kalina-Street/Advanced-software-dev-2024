@@ -29,7 +29,7 @@ export default function Sprofile() {
           { mode: "cors" }
         )
         .then((data) => {
-          if (localStorage.getItem(data.data.password.toString())!==data.data.password.toString()) {
+          if (localStorage.getItem(data.data.password.toString())!==data.data.password.toString() || localStorage.getItem("org-token")!==data.data.organisation.toString() ) {
           localStorage.clear()
           document.querySelector("#axiosnotif").style.display = "none";
           document.querySelector("#connectionnotif").style.display = "none";
